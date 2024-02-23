@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'malcy-frontend',
+  appId: 'malcy.game',
+  appName: 'Malcy',
   webDir: 'dist',
   server: {
     androidScheme: 'https'
