@@ -1,6 +1,6 @@
 {
-  "short_name": "Ionic App",
-  "name": "My Ionic App",
+  "short_name": "Malcy",
+  "name": "Malcy game",
   "icons": [
     {
       "src": "../icons/icon-48.webp",

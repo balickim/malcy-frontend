@@ -1,6 +1,16 @@
-import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
+import {useRef} from "react";
+import {
+  IonApp, IonButton,
+  IonButtons, IonContent,
+  IonHeader, IonInput, IonItem,
+  IonModal,
+  IonRouterOutlet,
+  IonSplitPane, IonTitle,
+  IonToolbar,
+  setupIonicReact
+} from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import Menu from './components/Menu';
 import Map from "./components/Map";
 
@@ -25,7 +35,7 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <IonApp>
       <IonReactRouter>
