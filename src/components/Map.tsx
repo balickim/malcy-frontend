@@ -3,20 +3,22 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
-  IonIcon, IonInput, IonItem, IonList,
+  IonIcon,
+  IonInput,
+  IonItem,
+  IonList,
   IonModal,
   IonPage,
   IonTitle,
   IonToolbar
 } from "@ionic/react";
-import React, {useEffect, useRef, useState} from 'react';
-import {MapContainer, Marker, TileLayer, useMap} from 'react-leaflet';
-
-import 'leaflet/dist/leaflet.css';
-import L from "leaflet";
 import {
   add,
 } from 'ionicons/icons';
+import React, {useEffect, useRef, useState} from 'react';
+import {MapContainer, Marker, Popup, TileLayer, useMap} from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from "leaflet";
 
 import {socket} from "../socket";
 
@@ -42,26 +44,44 @@ const LocationMarker = ({ setFooEvents }: { setFooEvents: (value: any) => void }
       map.flyTo(e.latlng, map.getZoom(), {animate: false});
       const radius = e.accuracy / 6;
       L.circle(e.latlng, radius).addTo(map);
+    };
 
-      const lat = e.latlng.lat;
-      const lng = e.latlng.lng;
+    function onFooEvent(value: any) {
+      setFooEvents((previous: any) => {
+        const newValues = Array.isArray(value) ? value : [value];
+        const filteredNewValues = newValues.filter(nv => !previous.some((pv: any) => pv.id === nv.id));
+        return [...previous, ...filteredNewValues];
+      });
+    }
+
+    const onMapMove = () => {
+      const bounds = map.getBounds();
+      console.log(`${bounds.getNorthEast().lat}, ${bounds.getNorthEast().lng}`);
+      console.log(`${bounds.getSouthWest().lat}, ${bounds.getSouthWest().lng}`);
+
+      const nelat = bounds.getNorthEast().lat;
+      const nelng = bounds.getNorthEast().lng;
+      const swlat = bounds.getSouthWest().lat;
+      const swlng = bounds.getSouthWest().lng;
       fetch(
-        `${import.meta.env.VITE_API_URL}/settlement/nearby?lat=${lat}&lng=${lng}`,
+        `${import.meta.env.VITE_API_URL}/settlement/bounds?southWestLat=${swlat}&southWestLng=${swlng}&northEastLat=${nelat}&northEastLng=${nelng}`,
         {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',
           }
         }
-      ).then((res) => res.json()).then((data) => setFooEvents(data))
+      ).then((res) => res.json()).then((data) => onFooEvent(data))
     };
 
     map.on('locationfound', onLocationFound);
-
+    map.on('moveend', onMapMove);
     return () => {
       map.stopLocate();
       map.off('locationfound', onLocationFound);
+      map.off('moveend', onMapMove);
     };
+
   }, [map]);
 
   return null;
@@ -71,7 +91,6 @@ const Map = () => {
   const [fooEvents, setFooEvents] = useState<any[]>([]);
   const [values, setValues] = useState({name: '', lat: '', lng: ''})
   const modalRef = useRef<HTMLIonModalElement>(null);
-  const defaultZoom = 17;
 
   async function confirm() {
     await fetch(
@@ -100,16 +119,23 @@ const Map = () => {
   }, []);
 
   const cityBounds: L.LatLngBoundsExpression = [
-    [53.398309, 14.494537], // south, west point
-    [53.483021, 14.604228] // north, east point
+    [53.391874, 14.424565], // south, west point
+    [53.516425, 14.653759] // north, east point
   ];
 
+  const settlementIcon = L.icon({
+    iconUrl: 'assets/settlement_0.png',
+    iconSize: [35, 35],
+  });
+
+  console.log(fooEvents);
   return (
     <IonPage>
       <MapContainer
         id="map"
         center={[53.431018, 14.544677]}
-        zoom={defaultZoom}
+        zoom={18}
+        minZoom={13}
         style={{ height: '100vh', width: '100%' }}
         maxBounds={cityBounds}
         maxBoundsViscosity={1}
@@ -121,7 +147,12 @@ const Map = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         {fooEvents.length && fooEvents.map((markerPos, idx) => (
-          <Marker key={idx} position={markerPos} />
+          <Marker key={idx} position={markerPos} icon={settlementIcon}>
+            <Popup>
+              <img src={'assets/settlement_0.png'} alt="settlement_0"/>
+              <pre>{JSON.stringify(markerPos, null, 2)}</pre>
+            </Popup>
+          </Marker>
         ))}
         <IonButton
           shape={'round'}

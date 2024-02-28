@@ -4,12 +4,9 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonListHeader,
   IonMenu,
   IonMenuToggle,
-  IonNote,
 } from '@ionic/react';
-
 import { useLocation } from 'react-router-dom';
 import {
   mapOutline,
@@ -36,7 +33,7 @@ const appPages: AppPage[] = [
 const Menu: React.FC = () => {
   const location = useLocation();
   return (
-    <IonMenu contentId="main" type="overlay">
+    <IonMenu contentId="main" type="push">
       <IonContent>
         <IonList id="inbox-list">
           {appPages.map((appPage, index) => {
