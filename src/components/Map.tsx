@@ -1,3 +1,4 @@
+import React, {useEffect, useRef, useState} from 'react';
 import {
   IonButton,
   IonButtons,
@@ -12,10 +13,7 @@ import {
   IonTitle,
   IonToolbar
 } from "@ionic/react";
-import {
-  add,
-} from 'ionicons/icons';
-import React, {useEffect, useRef, useState} from 'react';
+import { add, locateOutline } from 'ionicons/icons';
 import {MapContainer, Marker, Popup, TileLayer, useMap} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
@@ -34,16 +32,28 @@ const InvalidateSize: React.FC = () => {
   return null;
 };
 
-const LocationMarker = ({ setFooEvents }: { setFooEvents: (value: any) => void }) => {
+const walkingManIcon = L.icon({
+  iconUrl: 'assets/player.gif',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+});
+
+const LocationMarker = ({ setFooEvents, onLocationUpdate }: { setFooEvents: (value: any) => void, onLocationUpdate: (latlng: L.LatLng) => void }) => {
   const map = useMap();
+  let marker: L.Marker | null = null;
 
   useEffect(() => {
-    map.locate({watch: false});
+    map.locate({ watch: true });
 
     const onLocationFound = (e: L.LocationEvent) => {
-      map.flyTo(e.latlng, map.getZoom(), {animate: false});
-      const radius = e.accuracy / 6;
-      L.circle(e.latlng, radius).addTo(map);
+      const { latlng } = e;
+      onLocationUpdate(latlng);
+
+      if (!marker) {
+        marker = L.marker(latlng, { icon: walkingManIcon }).addTo(map);
+      } else {
+        marker.setLatLng(latlng);
+      }
     };
 
     function onFooEvent(value: any) {
@@ -56,8 +66,6 @@ const LocationMarker = ({ setFooEvents }: { setFooEvents: (value: any) => void }
 
     const onMapMove = () => {
       const bounds = map.getBounds();
-      console.log(`${bounds.getNorthEast().lat}, ${bounds.getNorthEast().lng}`);
-      console.log(`${bounds.getSouthWest().lat}, ${bounds.getSouthWest().lng}`);
 
       const nelat = bounds.getNorthEast().lat;
       const nelng = bounds.getNorthEast().lng;
@@ -91,6 +99,8 @@ const Map = () => {
   const [fooEvents, setFooEvents] = useState<any[]>([]);
   const [values, setValues] = useState({name: '', lat: '', lng: ''})
   const modalRef = useRef<HTMLIonModalElement>(null);
+  const [playerLocation, setPlayerLocation] = useState<L.LatLng | null>(null);
+  const mapRef = useRef<L.Map>(null);
 
   async function confirm() {
     await fetch(
@@ -128,10 +138,16 @@ const Map = () => {
     iconSize: [35, 35],
   });
 
-  console.log(fooEvents);
+  const centerMapOnPlayer = () => {
+    if (mapRef.current && playerLocation) {
+      mapRef.current.flyTo(playerLocation, mapRef.current.getZoom(), {animate: true});
+    }
+  };
+
   return (
     <IonPage>
       <MapContainer
+        ref={mapRef}
         id="map"
         center={[53.431018, 14.544677]}
         zoom={18}
@@ -141,7 +157,10 @@ const Map = () => {
         maxBoundsViscosity={1}
       >
         <InvalidateSize />
-        <LocationMarker setFooEvents={setFooEvents} />
+        <LocationMarker
+          setFooEvents={setFooEvents}
+          onLocationUpdate={setPlayerLocation}
+        />
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -156,15 +175,29 @@ const Map = () => {
         ))}
         <IonButton
           shape={'round'}
-          id="open-modal" expand="block"
+          id="open-modal"
+          expand="block"
           style={{
             position: 'absolute',
             bottom: '5%',
             right: '5%',
             zIndex: 1000,
+            marginInline: 0
           }}
         >
           <IonIcon aria-hidden="true" slot="start" ios={add} md={add} />
+        </IonButton>
+        <IonButton
+          onClick={centerMapOnPlayer}
+          style={{
+            position: 'absolute',
+            bottom: '10%',
+            right: '5%',
+            zIndex: 1000,
+            marginInline: 0
+          }}
+        >
+          <IonIcon aria-hidden={'true'} slot={'start'} ios={locateOutline} md={locateOutline} />
         </IonButton>
       </MapContainer>
 
