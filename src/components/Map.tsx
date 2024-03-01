@@ -17,6 +17,7 @@ import { add, locateOutline } from 'ionicons/icons';
 import {MapContainer, Marker, Popup, TileLayer, useMap} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 
 import {socket} from "../socket";
 
@@ -165,14 +166,16 @@ const Map = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        {fooEvents.length && fooEvents.map((markerPos, idx) => (
-          <Marker key={idx} position={markerPos} icon={settlementIcon}>
-            <Popup>
-              <img src={'assets/settlement_0.png'} alt="settlement_0"/>
-              <pre>{JSON.stringify(markerPos, null, 2)}</pre>
-            </Popup>
-          </Marker>
-        ))}
+        <MarkerClusterGroup chunkedLoading>
+          {fooEvents.length && fooEvents.map((markerPos, idx) => (
+            <Marker key={idx} position={markerPos} icon={settlementIcon}>
+              <Popup>
+                <img src={'assets/settlement_0.png'} alt="settlement_0"/>
+                <pre>{JSON.stringify(markerPos, null, 2)}</pre>
+              </Popup>
+            </Marker>
+          ))}
+        </MarkerClusterGroup>
         <IonButton
           shape={'round'}
           id="open-modal"
