@@ -185,7 +185,6 @@ const Map = () => {
             bottom: '5%',
             right: '5%',
             zIndex: 1000,
-            marginInline: 0
           }}
         >
           <IonIcon aria-hidden="true" slot="start" ios={add} md={add} />
