@@ -47,9 +47,6 @@ dependencies:
   leaflet:
     specifier: ^1.9.4
     version: 1.9.4
-  malcy-shared:
-    specifier: file:../malcy-shared
-    version: file:../malcy-shared
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -8381,8 +8378,3 @@ packages:
   /zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
     dev: true
-
-  file:../malcy-shared:
-    resolution: {directory: ../malcy-shared, type: directory}
-    name: malcy-shared
-    dev: false
