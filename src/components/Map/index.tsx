@@ -4,7 +4,6 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
-  IonIcon,
   IonInput,
   IonItem,
   IonList,
@@ -13,13 +12,14 @@ import {
   IonTitle,
   IonToolbar
 } from "@ionic/react";
-import { add, locateOutline } from 'ionicons/icons';
-import {MapContainer, Marker, Popup, TileLayer, useMap} from 'react-leaflet';
+import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
-import MarkerClusterGroup from "react-leaflet-cluster";
 
-import {socket} from "../socket";
+import { socket } from "../../api/socket";
+import Settlements from "./Settlements";
+import { IBounds } from "../../types/settlement";
+import Buttons from "./Buttons";
 
 const InvalidateSize: React.FC = () => {
   const map = useMap();
@@ -39,7 +39,7 @@ const walkingManIcon = L.icon({
   iconAnchor: [16, 32],
 });
 
-const LocationMarker = ({ setFooEvents, onLocationUpdate }: { setFooEvents: (value: any) => void, onLocationUpdate: (latlng: L.LatLng) => void }) => {
+const LocationMarker = ({ setFooEvents, onLocationUpdate, setBounds }: { setFooEvents: (value: any) => void, onLocationUpdate: (latlng: L.LatLng) => void, setBounds: (value: any) => void }) => {
   const map = useMap();
   let marker: L.Marker | null = null;
 
@@ -72,15 +72,7 @@ const LocationMarker = ({ setFooEvents, onLocationUpdate }: { setFooEvents: (val
       const nelng = bounds.getNorthEast().lng;
       const swlat = bounds.getSouthWest().lat;
       const swlng = bounds.getSouthWest().lng;
-      fetch(
-        `${import.meta.env.VITE_API_URL}/settlement/bounds?southWestLat=${swlat}&southWestLng=${swlng}&northEastLat=${nelat}&northEastLng=${nelng}`,
-        {
-          method: "GET",
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }
-      ).then((res) => res.json()).then((data) => onFooEvent(data))
+      setBounds({ nelat, nelng, swlat, swlng })
     };
 
     map.on('locationfound', onLocationFound);
@@ -102,6 +94,7 @@ const Map = () => {
   const modalRef = useRef<HTMLIonModalElement>(null);
   const [playerLocation, setPlayerLocation] = useState<L.LatLng | null>(null);
   const mapRef = useRef<L.Map>(null);
+  const [bounds, setBounds] = useState<IBounds>({ nelat: 0, nelng: 0, swlat: 0, swlng: 0 })
 
   async function confirm() {
     await fetch(
@@ -134,11 +127,6 @@ const Map = () => {
     [53.516425, 14.653759] // north, east point
   ];
 
-  const settlementIcon = L.icon({
-    iconUrl: 'assets/settlement_0.png',
-    iconSize: [35, 35],
-  });
-
   const centerMapOnPlayer = () => {
     if (mapRef.current && playerLocation) {
       mapRef.current.flyTo(playerLocation, mapRef.current.getZoom(), {animate: true});
@@ -161,46 +149,15 @@ const Map = () => {
         <LocationMarker
           setFooEvents={setFooEvents}
           onLocationUpdate={setPlayerLocation}
+          setBounds={setBounds}
         />
+        <Settlements bounds={bounds} />
+        <Buttons centerMapOnPlayer={centerMapOnPlayer} />
+
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <MarkerClusterGroup chunkedLoading>
-          {fooEvents.length && fooEvents.map((markerPos, idx) => (
-            <Marker key={idx} position={markerPos} icon={settlementIcon}>
-              <Popup>
-                <img src={'assets/settlement_0.png'} alt="settlement_0"/>
-                <pre>{JSON.stringify(markerPos, null, 2)}</pre>
-              </Popup>
-            </Marker>
-          ))}
-        </MarkerClusterGroup>
-        <IonButton
-          shape={'round'}
-          id="open-modal"
-          expand="block"
-          style={{
-            position: 'absolute',
-            bottom: '5%',
-            right: '5%',
-            zIndex: 1000,
-          }}
-        >
-          <IonIcon aria-hidden="true" slot="start" ios={add} md={add} />
-        </IonButton>
-        <IonButton
-          onClick={centerMapOnPlayer}
-          style={{
-            position: 'absolute',
-            bottom: '10%',
-            right: '5%',
-            zIndex: 1000,
-            marginInline: 0
-          }}
-        >
-          <IonIcon aria-hidden={'true'} slot={'start'} ios={locateOutline} md={locateOutline} />
-        </IonButton>
       </MapContainer>
 
       <IonModal ref={modalRef} trigger="open-modal">

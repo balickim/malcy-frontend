@@ -12,7 +12,7 @@ import {
   mapOutline,
   mapSharp,
 } from 'ionicons/icons';
-import './Menu.css';
+import './style.css';
 
 interface AppPage {
   url: string;
