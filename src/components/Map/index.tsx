@@ -151,12 +151,13 @@ const Map = () => {
           onLocationUpdate={setPlayerLocation}
           setBounds={setBounds}
         />
+        <Settlements bounds={bounds} />
+        <Buttons centerMapOnPlayer={centerMapOnPlayer} />
+
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <Settlements bounds={bounds} />
-        <Buttons centerMapOnPlayer={centerMapOnPlayer} />
       </MapContainer>
 
       <IonModal ref={modalRef} trigger="open-modal">
