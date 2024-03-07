@@ -1,29 +1,17 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {
-  IonButton,
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonInput,
-  IonItem,
-  IonList,
-  IonModal,
-  IonPage,
-  IonTitle,
-  IonToolbar
-} from "@ionic/react";
-import { MapContainer, TileLayer, useMap } from 'react-leaflet';
+import { IonPage } from "@ionic/react";
+import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 
-import { socket } from "../../api/socket";
-import Settlements from "./Settlements";
-import { IBounds } from "../../types/settlement";
-import Buttons from "./Buttons";
-import AppVersion from "./AppVersion";
-import LocationMarker from "./LocationMarker";
-import InvalidateSize from "./InvalidateSize";
-import AddSettlementModal from "./AddSettlementModal";
+import { socket } from "~/api/socket";
+import Settlements from "~/components/Map/Settlements";
+import { IBounds } from "~/types/settlement";
+import Buttons from "~/components/Map/Buttons";
+import AppVersion from "~/components/Map/AppVersion";
+import LocationMarker from "~/components/Map/LocationMarker";
+import InvalidateSize from "~/components/Map/InvalidateSize";
+import AddSettlementModal from "~/components/Map/AddSettlementModal";
 
 const Map = () => {
   const initialBounds: IBounds = { northEastLat: 53.43246264935192, northEastLng: 14.54695522785187, southWestLat: 53.42957340431125, southWestLng: 14.542395472526552 }

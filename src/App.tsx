@@ -1,12 +1,7 @@
-import {useRef} from "react";
 import {
-  IonApp, IonButton,
-  IonButtons, IonContent,
-  IonHeader, IonInput, IonItem,
-  IonModal,
+  IonApp,
   IonRouterOutlet,
-  IonSplitPane, IonTitle,
-  IonToolbar,
+  IonSplitPane,
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
@@ -14,8 +9,8 @@ import { Route } from 'react-router-dom';
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-import Menu from './components/Menu';
-import Map from "./components/Map";
+import Menu from '~/components/Menu';
+import Map from "~/components/Map";
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';

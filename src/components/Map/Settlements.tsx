@@ -4,9 +4,9 @@ import React, {useEffect, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import L from "leaflet";
 
-import {IBounds} from "../../types/settlement";
-import {SettlementDto} from "../../api/settlements/dtos";
-import {getSettlements} from "../../api/settlements/routes";
+import {IBounds} from "~/types/settlement";
+import {SettlementDto} from "~/api/settlements/dtos";
+import {getSettlements} from "~/api/settlements/routes";
 
 export default function Settlements({ bounds }: { bounds: IBounds }) {
   const [settlements, setSettlements] = useState<SettlementDto[]>([])
