@@ -4,8 +4,8 @@ import React, {useEffect, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import L from "leaflet";
 
-import {SettlementDto} from "malcy-shared/settlement/dtos/settlement.dto";
 import {IBounds} from "../../types/settlement";
+import {SettlementDto} from "../../api/settlements/dtos";
 
 export default function Settlements({ bounds }: { bounds: IBounds }) {
   const [settlements, setSettlements] = useState<SettlementDto[]>([])
