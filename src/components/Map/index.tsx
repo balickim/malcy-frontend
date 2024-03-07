@@ -4,7 +4,6 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
-  IonIcon,
   IonInput,
   IonItem,
   IonList,
@@ -13,7 +12,6 @@ import {
   IonTitle,
   IonToolbar
 } from "@ionic/react";
-import { add, locateOutline } from 'ionicons/icons';
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
