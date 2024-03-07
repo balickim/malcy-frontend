@@ -1,15 +1,13 @@
-export const getSettlements = ({swlat, swlng, nelat, nelng}: {
-  swlat: number,
-  swlng: number,
-  nelat: number,
-  nelng: number
-}): Promise<Response> => {
+import {IBounds} from "../../types/settlement";
+
+export const getSettlements = async (bounds: IBounds): Promise<Response> => {
   const params = new URLSearchParams({
-    southWestLat: swlat.toString(),
-    southWestLng: swlng.toString(),
-    northEastLat: nelat.toString(),
-    northEastLng: nelng.toString(),
+    southWestLat: bounds.southWestLat.toString(),
+    southWestLng: bounds.southWestLng.toString(),
+    northEastLat: bounds.northEastLat.toString(),
+    northEastLng: bounds.northEastLng.toString(),
   });
 
-  return fetch(`${import.meta.env.VITE_API_URL}/settlement/bounds?${params.toString()}`);
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/settlement/bounds?${params}`)
+  return res.json();
 };

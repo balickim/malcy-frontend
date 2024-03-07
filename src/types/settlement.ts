@@ -1,6 +1,6 @@
 export interface IBounds {
-  nelat: number,
-  nelng: number,
-  swlat: number,
-  swlng: number
+  southWestLat: number,
+  southWestLng: number,
+  northEastLat: number,
+  northEastLng: number,
 }

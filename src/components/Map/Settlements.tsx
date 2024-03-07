@@ -6,15 +6,13 @@ import L from "leaflet";
 
 import {IBounds} from "../../types/settlement";
 import {SettlementDto} from "../../api/settlements/dtos";
+import {getSettlements} from "../../api/settlements/routes";
 
 export default function Settlements({ bounds }: { bounds: IBounds }) {
   const [settlements, setSettlements] = useState<SettlementDto[]>([])
   const { data, isSuccess} = useQuery({
-    queryKey: ['settlementBounds', { southWestLat: bounds?.swlat, southWestLng: bounds?.swlng, northEastLat: bounds?.nelat, northEastLng: bounds?.nelng }],
-    queryFn: async ({ queryKey }) => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/settlement/bounds?southWestLat=${bounds?.swlat}&southWestLng=${bounds?.swlng}&northEastLat=${bounds?.nelat}&northEastLng=${bounds?.nelng}`)
-      return res.json()
-    },
+    queryKey: ['settlementBounds', bounds],
+    queryFn: () => getSettlements(bounds)
   })
 
   useEffect(() => {
@@ -32,7 +30,6 @@ export default function Settlements({ bounds }: { bounds: IBounds }) {
     iconSize: [35, 35],
   });
 
-  if (settlements && !settlements.length) return null
   return (
     <MarkerClusterGroup chunkedLoading>
       {settlements.map((markerPos, idx) => (

@@ -68,11 +68,12 @@ const LocationMarker = ({ setFooEvents, onLocationUpdate, setBounds }: { setFooE
     const onMapMove = () => {
       const bounds = map.getBounds();
 
-      const nelat = bounds.getNorthEast().lat;
-      const nelng = bounds.getNorthEast().lng;
-      const swlat = bounds.getSouthWest().lat;
-      const swlng = bounds.getSouthWest().lng;
-      setBounds({ nelat, nelng, swlat, swlng })
+      const northEastLat = bounds.getNorthEast().lat;
+      const northEastLng = bounds.getNorthEast().lng;
+      const southWestLat = bounds.getSouthWest().lat;
+      const southWestLng = bounds.getSouthWest().lng;
+
+      setBounds({ northEastLat, northEastLng, southWestLat, southWestLng })
     };
 
     map.on('locationfound', onLocationFound);
@@ -89,12 +90,14 @@ const LocationMarker = ({ setFooEvents, onLocationUpdate, setBounds }: { setFooE
 }
 
 const Map = () => {
+  const initialBounds: IBounds = {northEastLat: 53.43246264935192, northEastLng: 14.54695522785187, southWestLat: 53.42957340431125, southWestLng: 14.542395472526552}
+
   const [fooEvents, setFooEvents] = useState<any[]>([]);
   const [values, setValues] = useState({name: '', lat: '', lng: ''})
   const modalRef = useRef<HTMLIonModalElement>(null);
   const [playerLocation, setPlayerLocation] = useState<L.LatLng | null>(null);
   const mapRef = useRef<L.Map>(null);
-  const [bounds, setBounds] = useState<IBounds>({ nelat: 0, nelng: 0, swlat: 0, swlng: 0 })
+  const [bounds, setBounds] = useState<IBounds>(initialBounds)
 
   async function confirm() {
     await fetch(
@@ -141,6 +144,7 @@ const Map = () => {
         center={[53.431018, 14.544677]}
         zoom={18}
         minZoom={13}
+        maxZoom={18}
         style={{ height: '100vh', width: '100%' }}
         maxBounds={cityBounds}
         maxBoundsViscosity={1}
