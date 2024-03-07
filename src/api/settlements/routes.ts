@@ -1,4 +1,4 @@
-import {IBounds} from "../../types/settlement";
+import {IBounds} from "~/types/settlement";
 
 export const getSettlements = async (bounds: IBounds): Promise<Response> => {
   const params = new URLSearchParams({
@@ -8,6 +8,6 @@ export const getSettlements = async (bounds: IBounds): Promise<Response> => {
     northEastLng: bounds.northEastLng.toString(),
   });
 
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/settlement/bounds?${params}`)
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/settlements/bounds?${params}`)
   return res.json();
 };

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import { MapContainer, TileLayer } from 'react-leaflet';
+import {MapContainer, TileLayer, useMapEvents} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 
@@ -29,7 +29,7 @@ const Map = () => {
 
   async function confirm(values: any) {
     await fetch(
-      `${import.meta.env.VITE_API_URL}/settlement`,
+      `${import.meta.env.VITE_API_URL}/settlements`,
       {
         method: "POST",
         headers: {
@@ -65,6 +65,15 @@ const Map = () => {
     }
   };
 
+  const LocationFinderDummy = () => {
+    const map = useMapEvents({
+      click(e) {
+        console.log(e.latlng);
+      },
+    });
+    return null;
+  };
+
   return (
     <PageContainer>
       <MapContainer
@@ -92,6 +101,7 @@ const Map = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
 
+        <LocationFinderDummy />
         <AppVersion />
       </MapContainer>
 
