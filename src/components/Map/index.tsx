@@ -20,6 +20,7 @@ import { socket } from "../../api/socket";
 import Settlements from "./Settlements";
 import { IBounds } from "../../types/settlement";
 import Buttons from "./Buttons";
+import AppVersion from "./AppVersion";
 
 const InvalidateSize: React.FC = () => {
   const map = useMap();
@@ -162,9 +163,14 @@ const Map = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
+
+        <AppVersion />
       </MapContainer>
 
-      <IonModal ref={modalRef} trigger="open-modal">
+      <IonModal
+        ref={modalRef}
+        trigger="open-modal"
+      >
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
