@@ -21,86 +21,20 @@ import Settlements from "./Settlements";
 import { IBounds } from "../../types/settlement";
 import Buttons from "./Buttons";
 import AppVersion from "./AppVersion";
-
-const InvalidateSize: React.FC = () => {
-  const map = useMap();
-
-  useEffect(() => {
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 200);
-  }, [map]);
-
-  return null;
-};
-
-const walkingManIcon = L.icon({
-  iconUrl: 'assets/player.gif',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-});
-
-const LocationMarker = ({ setFooEvents, onLocationUpdate, setBounds }: { setFooEvents: (value: any) => void, onLocationUpdate: (latlng: L.LatLng) => void, setBounds: (value: any) => void }) => {
-  const map = useMap();
-  let marker: L.Marker | null = null;
-
-  useEffect(() => {
-    map.locate({ watch: true });
-
-    const onLocationFound = (e: L.LocationEvent) => {
-      const { latlng } = e;
-      onLocationUpdate(latlng);
-
-      if (!marker) {
-        marker = L.marker(latlng, { icon: walkingManIcon }).addTo(map);
-      } else {
-        marker.setLatLng(latlng);
-      }
-    };
-
-    function onFooEvent(value: any) {
-      setFooEvents((previous: any) => {
-        const newValues = Array.isArray(value) ? value : [value];
-        const filteredNewValues = newValues.filter(nv => !previous.some((pv: any) => pv.id === nv.id));
-        return [...previous, ...filteredNewValues];
-      });
-    }
-
-    const onMapMove = () => {
-      const bounds = map.getBounds();
-
-      const northEastLat = bounds.getNorthEast().lat;
-      const northEastLng = bounds.getNorthEast().lng;
-      const southWestLat = bounds.getSouthWest().lat;
-      const southWestLng = bounds.getSouthWest().lng;
-
-      setBounds({ northEastLat, northEastLng, southWestLat, southWestLng })
-    };
-
-    map.on('locationfound', onLocationFound);
-    map.on('moveend', onMapMove);
-    return () => {
-      map.stopLocate();
-      map.off('locationfound', onLocationFound);
-      map.off('moveend', onMapMove);
-    };
-
-  }, [map]);
-
-  return null;
-}
+import LocationMarker from "./LocationMarker";
+import InvalidateSize from "./InvalidateSize";
+import AddSettlementModal from "./AddSettlementModal";
 
 const Map = () => {
-  const initialBounds: IBounds = {northEastLat: 53.43246264935192, northEastLng: 14.54695522785187, southWestLat: 53.42957340431125, southWestLng: 14.542395472526552}
+  const initialBounds: IBounds = { northEastLat: 53.43246264935192, northEastLng: 14.54695522785187, southWestLat: 53.42957340431125, southWestLng: 14.542395472526552 }
 
   const [fooEvents, setFooEvents] = useState<any[]>([]);
-  const [values, setValues] = useState({name: '', lat: '', lng: ''})
   const modalRef = useRef<HTMLIonModalElement>(null);
   const [playerLocation, setPlayerLocation] = useState<L.LatLng | null>(null);
   const mapRef = useRef<L.Map>(null);
   const [bounds, setBounds] = useState<IBounds>(initialBounds)
 
-  async function confirm() {
+  async function confirm(values: any) {
     await fetch(
       `${import.meta.env.VITE_API_URL}/settlement`,
       {
@@ -108,7 +42,8 @@ const Map = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name: values.name, lat: values.lat, lng: values.lng })}
+        body: JSON.stringify(values)
+      }
     )
 
     modalRef.current?.dismiss();
@@ -167,54 +102,7 @@ const Map = () => {
         <AppVersion />
       </MapContainer>
 
-      <IonModal
-        ref={modalRef}
-        trigger="open-modal"
-      >
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="start">
-              <IonButton onClick={() => modalRef.current?.dismiss()}>Cancel</IonButton>
-            </IonButtons>
-            <IonTitle>Welcome</IonTitle>
-            <IonButtons slot="end">
-              <IonButton strong={true} onClick={() => confirm()}>
-                Confirm
-              </IonButton>
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding">
-          <IonList>
-            <IonItem>
-              <IonInput
-                label="Name"
-                value={values.name}
-                // @ts-ignore
-                onIonChange={(event) => setValues(prevState => ({...prevState, name: event.detail.value}))}
-              />
-            </IonItem>
-
-            <IonItem>
-              <IonInput
-                label="Lat"
-                value={values.lat}
-                // @ts-ignore
-                onIonChange={(event) => setValues(prevState => ({...prevState, lat: event.detail.value}))}
-              />
-            </IonItem>
-
-            <IonItem>
-              <IonInput
-                label="Lng"
-                value={values.lng}
-                // @ts-ignore
-                onIonChange={(event) => setValues(prevState => ({...prevState, lng: event.detail.value}))}
-              />
-            </IonItem>
-          </IonList>
-        </IonContent>
-      </IonModal>
+      <AddSettlementModal modalRef={modalRef} />
     </IonPage>
   );
 };
