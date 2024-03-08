@@ -5,12 +5,17 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import React from "react";
+import { Toaster } from "react-hot-toast";
 
+import { browserHistory } from "~/utils/history";
+import store from "~/store";
 import Menu from '~/components/Menu';
 import Map from "~/components/Map";
+import Login from "~/components/Auth/Login";
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -34,22 +39,30 @@ import './theme/variables.css';
 setupIonicReact();
 
 const App = () => {
-  const queryClient = new QueryClient()
+  const queryClient = new QueryClient();
+  const { userStore } = store
+
   return (
     <IonApp>
-      <IonReactRouter>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <IonReactRouter>
           <IonSplitPane contentId="main">
             <Menu />
             <IonRouterOutlet id="main">
               <Route path="/" exact={true}>
+                {/*{userStore.isLoggedIn ? <Map /> : <Redirect to="/login" />}*/}
                 <Map />
+              </Route>
+              <Route path="/login" exact={true}>
+                <Login />
               </Route>
             </IonRouterOutlet>
           </IonSplitPane>
           <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-      </IonReactRouter>
+        </IonReactRouter>
+      </QueryClientProvider>
+
+      <Toaster position={'top-right'} />
     </IonApp>
   );
 };

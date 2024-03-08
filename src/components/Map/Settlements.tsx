@@ -4,15 +4,16 @@ import React, {useEffect, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import L from "leaflet";
 
-import {IBounds} from "~/types/settlement";
-import {SettlementDto} from "~/api/settlements/dtos";
-import {getSettlements} from "~/api/settlements/routes";
+import { IBounds } from "~/types/settlement";
+import { SettlementDto } from "~/api/settlements/dtos";
+import { getSettlements } from "~/api/settlements/routes";
+import { convertBoundsToSearchParams } from "~/utils/formatters";
 
 export default function Settlements({ bounds }: { bounds: IBounds }) {
   const [settlements, setSettlements] = useState<SettlementDto[]>([])
   const { data, isSuccess} = useQuery({
     queryKey: ['settlementBounds', bounds],
-    queryFn: () => getSettlements(bounds)
+    queryFn: () => getSettlements(new URLSearchParams(convertBoundsToSearchParams(bounds)))
   })
 
   useEffect(() => {
