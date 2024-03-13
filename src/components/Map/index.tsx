@@ -2,7 +2,9 @@ import React, {useEffect, useRef, useState} from 'react';
 import {MapContainer, TileLayer, useMapEvents} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
+import { Toaster } from "react-hot-toast";
 
+import store from "~/store";
 import { socket } from "~/api/socket";
 import { IBounds } from "~/types/settlement";
 import PageContainer from "~/components/PageContainer";
@@ -48,7 +50,6 @@ const Map = () => {
     }
 
     socket.on('foo', onFooEvent);
-
     return () => {
       socket.off('foo', onFooEvent);
     };
