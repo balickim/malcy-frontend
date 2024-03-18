@@ -2,9 +2,8 @@ import React, {useEffect, useRef, useState} from 'react';
 import {MapContainer, TileLayer, useMapEvents} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
-import { Toaster } from "react-hot-toast";
+import {useIonRouter} from "@ionic/react";
 
-import store from "~/store";
 import { socket } from "~/api/socket";
 import { IBounds } from "~/types/settlement";
 import PageContainer from "~/components/PageContainer";
@@ -16,12 +15,24 @@ import InvalidateSize from "~/components/Map/InvalidateSize";
 import AddSettlementModal from "~/components/Map/AddSettlementModal";
 
 const Map = () => {
+  const router = useIonRouter();
   const initialBounds: IBounds = {
     northEastLat: 53.43246264935192,
     northEastLng: 14.54695522785187,
     southWestLat: 53.42957340431125,
     southWestLng: 14.542395472526552
   };
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      router.push('/login');
+    };
+
+    window.addEventListener('unauthorized', handleUnauthorized);
+    return () => {
+      window.removeEventListener('unauthorized', handleUnauthorized);
+    };
+  }, [router]);
 
   const [fooEvents, setFooEvents] = useState<any[]>([]);
   const modalRef = useRef<HTMLIonModalElement>(null);

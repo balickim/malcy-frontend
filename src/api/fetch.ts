@@ -1,6 +1,16 @@
 import { toast } from 'react-hot-toast';
 
-import {getAccessToken} from "~/utils/cookies";
+import { getAccessToken, setAccessToken } from "~/utils/cookies";
+
+async function tryRefreshToken() {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+    method: 'POST',
+    credentials: 'include'
+  })
+  const res = await response.json()
+  if (res.access_token) return res.access_token
+  return false
+}
 
 interface FetchOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -10,26 +20,46 @@ interface FetchOptions {
 
 export async function fetchWrapper(url: string, options?: FetchOptions): Promise<Response | void> {
   try {
-    const headers = new Headers(options?.headers ?? {});
-
-    const token = getAccessToken();
+    let headers = new Headers(options?.headers ?? {});
+    let token = getAccessToken();
     if (token) headers.append('Authorization', `Bearer ${token}`);
     headers.append('Content-Type', 'application/json',)
 
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       method: options?.method ?? 'GET',
       headers: headers,
       body: options?.body,
     });
 
     if (response.ok) {
-      return response.json()
-    } else {
-      if (response.status === 401) throw new Error('Error! Not logged in');
-      if (response.status === 404) throw new Error('404, Not found');
-      if (response.status === 500) throw new Error('500, internal server error');
-      throw new Error(`HTTP error! status: ${response.status}`);
+      return response.json();
+    } else if (response.status === 401) {
+      const accessToken = await tryRefreshToken();
+      if (accessToken) {
+        setAccessToken(accessToken)
+        headers = new Headers(options?.headers ?? {});
+        headers.append('Authorization', `Bearer ${accessToken}`);
+        headers.append('Content-Type', 'application/json');
+
+        response = await fetch(url, {
+          method: options?.method ?? 'GET',
+          headers: headers,
+          body: options?.body,
+        });
+
+        if (response.ok) {
+          return response.json();
+        }
+      } else {
+        const event = new CustomEvent('unauthorized', { detail: 'User is not authenticated' });
+        window.dispatchEvent(event);
+        throw new Error('Session expired, redirecting to login...');
+      }
     }
+
+    if (response.status === 404) throw new Error('404, Not found');
+    if (response.status === 500) throw new Error('500, internal server error');
+    throw new Error(`HTTP error! status: ${response.status}`);
   } catch (error: unknown) {
     if (error instanceof Error) {
       toast.error(error.message);
