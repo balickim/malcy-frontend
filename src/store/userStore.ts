@@ -9,9 +9,7 @@ class UserStore {
     makeAutoObservable(this);
   }
 
-  logIn(userData: { [key: string]: any }) {
-    this.isLoggedIn = true;
-    this.userData = userData;
+  logIn(userData: { access_token: string }) {
     setAccessToken(userData.access_token)
   }
 

@@ -12,43 +12,38 @@ async function tryRefreshToken() {
   return false
 }
 
-interface FetchOptions {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+interface FetchOptions extends RequestInit {
   headers?: HeadersInit;
-  body?: BodyInit | null;
 }
 
-export async function fetchWrapper(url: string, options?: FetchOptions): Promise<Response | void> {
+export async function fetchWrapper<T>(url: string, options?: FetchOptions): Promise<T> {
   try {
-    let headers = new Headers(options?.headers ?? {});
-    let token = getAccessToken();
-    if (token) headers.append('Authorization', `Bearer ${token}`);
-    headers.append('Content-Type', 'application/json',)
+    const headers = new Headers(options?.headers ?? {});
+    const token = getAccessToken();
+    if (token) headers.set('Authorization', `Bearer ${token}`);
+    if (!headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/json');
+    }
 
     let response = await fetch(url, {
-      method: options?.method ?? 'GET',
+      ...options,
       headers: headers,
-      body: options?.body,
     });
 
     if (response.ok) {
-      return response.json();
+      return response.json() as Promise<T>;
     } else if (response.status === 401) {
       const accessToken = await tryRefreshToken();
       if (accessToken) {
-        setAccessToken(accessToken)
-        headers = new Headers(options?.headers ?? {});
-        headers.append('Authorization', `Bearer ${accessToken}`);
-        headers.append('Content-Type', 'application/json');
-
+        setAccessToken(accessToken);
+        headers.set('Authorization', `Bearer ${accessToken}`);
         response = await fetch(url, {
-          method: options?.method ?? 'GET',
+          ...options,
           headers: headers,
-          body: options?.body,
         });
 
         if (response.ok) {
-          return response.json();
+          return response.json() as Promise<T>;
         }
       } else {
         const event = new CustomEvent('unauthorized', { detail: 'User is not authenticated' });
@@ -66,5 +61,6 @@ export async function fetchWrapper(url: string, options?: FetchOptions): Promise
     } else {
       toast.error('An unexpected error occurred');
     }
+    throw error;
   }
 }

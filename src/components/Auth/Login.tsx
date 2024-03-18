@@ -31,8 +31,10 @@ const LoginPage: React.FC = () => {
   const handleLogin = async () => {
     const res = await mutation.mutateAsync({ email, password });
 
-    userStore.logIn(res);
-    router.push('/');
+    if (res) {
+      userStore.logIn(res);
+      router.push('/');
+    }
   };
 
   return (
