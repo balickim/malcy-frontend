@@ -31,9 +31,19 @@ const Auth: React.FC = () => {
     const res = await mutation.mutateAsync({ email, password });
 
     if (res) {
+      console.log(res);
       userStore.logIn(res);
       router.push("/");
     }
+  };
+
+  const handleLogout = async () => {
+    // const res = await mutation.mutateAsync({ email, password });
+    //
+    // if (res) {
+    userStore.logOut();
+    router.push("/login");
+    // }
   };
 
   return (
@@ -62,6 +72,10 @@ const Auth: React.FC = () => {
         </IonItem>
         <IonButton expand="block" onClick={handleLogin}>
           Zaloguj się
+        </IonButton>
+
+        <IonButton expand="block" onClick={handleLogout}>
+          Wyloguj się
         </IonButton>
       </IonContent>
     </PageContainer>

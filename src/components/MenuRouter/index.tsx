@@ -12,6 +12,7 @@ import { Route } from "react-router-dom";
 
 import Login from "~/pages/Auth";
 import Map from "~/pages/Map";
+import store from "~/store";
 
 interface IAppPage {
   url: string;
@@ -39,15 +40,22 @@ const appPages: IAppPage[] = [
 ];
 
 const MenuRouter: React.FC = () => {
+  const { userStore } = store;
   return (
     <IonTabs>
       <IonRouterOutlet>
-        <Redirect exact path="/" to="/home" />
+        <Route exact path="/" render={() => <Redirect to="/home" />} />
         {appPages.map((page, index) => (
           <Route
             key={index}
             path={page.url}
-            render={() => <page.Component />}
+            render={() =>
+              !userStore.isLoggedIn && page.url !== "/login" ? (
+                <Redirect to="/login" />
+              ) : (
+                <page.Component />
+              )
+            }
             exact={true}
           />
         ))}

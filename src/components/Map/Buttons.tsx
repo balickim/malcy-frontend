@@ -15,28 +15,23 @@ export default function Buttons({ centerMapOnPlayer }: IButtons) {
         expand="block"
         style={{
           position: "absolute",
-          bottom: "5%",
-          right: "5%",
-          zIndex: 1000,
-        }}
-      >
-        <IonIcon aria-hidden="true" slot="start" ios={add} md={add} />
-      </IonButton>
-      <IonButton
-        onClick={centerMapOnPlayer}
-        style={{
-          position: "absolute",
           bottom: "10%",
           right: "5%",
           zIndex: 1000,
         }}
       >
-        <IonIcon
-          aria-hidden={"true"}
-          slot={"start"}
-          ios={locateOutline}
-          md={locateOutline}
-        />
+        <IonIcon aria-hidden="true" ios={add} md={add} />
+      </IonButton>
+      <IonButton
+        onClick={centerMapOnPlayer}
+        style={{
+          position: "absolute",
+          bottom: "5%",
+          right: "5%",
+          zIndex: 1000,
+        }}
+      >
+        <IonIcon aria-hidden={"true"} ios={locateOutline} md={locateOutline} />
       </IonButton>
     </>
   );

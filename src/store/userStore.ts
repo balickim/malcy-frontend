@@ -1,21 +1,31 @@
-import { makeAutoObservable } from 'mobx';
-import {setAccessToken} from "~/utils/cookies";
+import { makeAutoObservable } from "mobx";
+import { makePersistable } from "mobx-persist-store";
+
+import { removeAccessToken, setAccessToken } from "~/utils/cookies";
 
 class UserStore {
+  id = "";
   isLoggedIn = false;
-  userData: { [key: string]: any } | null = null;
 
   constructor() {
     makeAutoObservable(this);
+    makePersistable(this, {
+      name: "UserStore",
+      properties: ["id", "isLoggedIn"],
+      storage: window.localStorage,
+    });
   }
 
-  logIn(userData: { access_token: string }) {
-    setAccessToken(userData.access_token)
+  logIn(userData: { access_token: string; userId: string }) {
+    setAccessToken(userData.access_token);
+    this.isLoggedIn = true;
+    this.id = userData.userId;
   }
 
   logOut() {
+    removeAccessToken();
     this.isLoggedIn = false;
-    this.userData = null;
+    this.id = "";
   }
 }
 

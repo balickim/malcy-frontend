@@ -7,8 +7,9 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { SettlementDto } from "~/api/settlements/dtos";
 import React from "react";
+
+import { SettlementDto } from "~/api/settlements/dtos";
 
 interface IViewSettlementModal {
   isOpen: boolean;
@@ -32,7 +33,7 @@ export default function ViewSettlementModal({
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <img src={"assets/settlement_0.png"} alt="settlement_0" />
+        <img src={"assets/settlement_village.png"} alt="settlement_village" />
         <pre>{JSON.stringify(settlementData, null, 2)}</pre>
       </IonContent>
     </IonModal>
