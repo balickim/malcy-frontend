@@ -1,6 +1,6 @@
 import MarkerClusterGroup from "react-leaflet-cluster";
-import {Marker, Popup} from "react-leaflet";
-import React, {useEffect, useState} from "react";
+import { Marker } from "react-leaflet";
+import React, { useEffect, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import L from "leaflet";
 
@@ -9,9 +9,16 @@ import { SettlementDto } from "~/api/settlements/dtos";
 import { getSettlements } from "~/api/settlements/routes";
 import { convertBoundsToSearchParams } from "~/utils/formatters";
 import { socket } from "~/api/socket";
+import ViewSettlementModal from "~/components/Map/ViewSettlementModal";
 
-export default function Settlements({ bounds }: { bounds: IBounds }) {
+interface ISettlements {
+  bounds: IBounds
+}
+
+export default function Settlements({ bounds }: ISettlements) {
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [settlements, setSettlements] = useState<SettlementDto[]>([])
+  const [selectedSettlementData, setSelectedSettlementData] = useState<SettlementDto | undefined>()
   const [fooEvents, setFooEvents] = useState<any[]>([]);
   const { data, isSuccess} = useQuery({
     queryKey: ['settlementBounds', bounds],
@@ -45,18 +52,31 @@ export default function Settlements({ bounds }: { bounds: IBounds }) {
   });
 
   return (
-    <MarkerClusterGroup chunkedLoading>
-      {settlements.map((markerPos, idx) => (
-        <Marker key={idx} position={markerPos} icon={settlementIcon}>
-          <Popup>
-            <img src={'assets/settlement_0.png'} alt="settlement_0"/>
-            <pre>{JSON.stringify(markerPos, null, 2)}</pre>
-          </Popup>
-        </Marker>
-      ))}
-      {fooEvents.map((markerPos, idx) => (
-        <Marker key={idx} position={markerPos} />
-      ))}
-    </MarkerClusterGroup>
+    <>
+      <MarkerClusterGroup chunkedLoading>
+        {settlements.map((markerPos, idx) => (
+          <Marker
+            key={idx}
+            position={markerPos}
+            icon={settlementIcon}
+            eventHandlers={{
+              click: (e) => {
+                setIsModalOpen(true);
+                setSelectedSettlementData(markerPos)
+              },
+            }}
+          />
+        ))}
+        {fooEvents.map((markerPos, idx) => (
+          <Marker key={idx} position={markerPos} />
+        ))}
+      </MarkerClusterGroup>
+
+      <ViewSettlementModal
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        settlementData={selectedSettlementData}
+      />
+    </>
   )
 }

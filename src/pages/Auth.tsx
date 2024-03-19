@@ -12,13 +12,13 @@ import {
 } from '@ionic/react';
 import React, { useState } from 'react';
 import { useMutation } from "@tanstack/react-query";
-import { useHistory } from 'react-router-dom';
 
 import { logIn } from "~/api/auth/routes";
 import { LoginDto } from "~/api/auth/dtos";
 import store from "~/store";
+import PageContainer from "~/components/PageContainer";
 
-const LoginPage: React.FC = () => {
+const Auth: React.FC = () => {
   const router = useIonRouter();
   const { userStore } = store
   const [email, setEmail] = useState('');
@@ -38,7 +38,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <IonPage>
+    <PageContainer>
       <IonLoading isOpen={mutation.isPending} message="Loading..." />
       <IonHeader>
         <IonToolbar>
@@ -54,8 +54,8 @@ const LoginPage: React.FC = () => {
         </IonItem>
         <IonButton expand="block" onClick={handleLogin}>Zaloguj się</IonButton>
       </IonContent>
-    </IonPage>
+    </PageContainer>
   );
 };
 
-export default LoginPage;
+export default Auth;

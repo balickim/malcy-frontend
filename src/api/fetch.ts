@@ -45,10 +45,6 @@ export async function fetchWrapper<T>(url: string, options?: FetchOptions): Prom
         if (response.ok) {
           return response.json() as Promise<T>;
         }
-      } else {
-        const event = new CustomEvent('unauthorized', { detail: 'User is not authenticated' });
-        window.dispatchEvent(event);
-        throw new Error('Session expired, redirecting to login...');
       }
     }
 

@@ -60,7 +60,9 @@ const Map = () => {
           onLocationUpdate={setPlayerLocation}
           setBounds={setBounds}
         />
-        <Settlements bounds={bounds} />
+        <Settlements
+          bounds={bounds}
+        />
         <Buttons centerMapOnPlayer={centerMapOnPlayer} />
 
         <TileLayer

@@ -16,8 +16,8 @@ import {
 import './style.css';
 import { Redirect } from "react-router";
 
-import Map from "~/components/Map";
-import Login from "~/components/Auth/Login";
+import Map from "~/pages/Map";
+import Login from "~/pages/Auth";
 
 interface AppPage {
   url: string;
@@ -44,7 +44,7 @@ const appPages: AppPage[] = [
   },
 ];
 
-const Menu: React.FC = () => {
+const MenuRouter: React.FC = () => {
   return (
     <IonTabs>
       <IonRouterOutlet>
@@ -66,4 +66,4 @@ const Menu: React.FC = () => {
   );
 };
 
-export default Menu;
+export default MenuRouter;

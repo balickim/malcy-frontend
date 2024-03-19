@@ -10,7 +10,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 
-import Menu from '~/components/Menu';
+import MenuRouter from "~/components/MenuRouter";
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -53,7 +53,7 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <IonReactRouter>
           <IonRouterOutlet id="main">
-            <Menu />
+            <MenuRouter />
           </IonRouterOutlet>
           <ReactQueryDevtools initialIsOpen={false} />
         </IonReactRouter>
