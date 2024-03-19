@@ -1,20 +1,16 @@
 import {
   IonApp,
   IonRouterOutlet,
-  IonSplitPane,
-  setupIonicReact
+  setupIonicReact,
+  useIonRouter
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Route } from 'react-router-dom';
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import React from "react";
+import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 
-import store from "~/store";
 import Menu from '~/components/Menu';
-import Map from "~/components/Map";
-import Login from "~/components/Auth/Login";
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -38,25 +34,27 @@ import './theme/variables.css';
 setupIonicReact();
 
 const App = () => {
+  const router = useIonRouter();
   const queryClient = new QueryClient();
-  const { userStore } = store
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      router.push('/login');
+    };
+
+    window.addEventListener('unauthorized', handleUnauthorized);
+    return () => {
+      window.removeEventListener('unauthorized', handleUnauthorized);
+    };
+  }, [router]);
 
   return (
     <IonApp>
       <QueryClientProvider client={queryClient}>
         <IonReactRouter>
-          <IonSplitPane contentId="main">
+          <IonRouterOutlet id="main">
             <Menu />
-            <IonRouterOutlet id="main">
-              <Route path="/" exact={true}>
-                {/*{userStore.isLoggedIn ? <Map /> : <Redirect to="/login" />}*/}
-                <Map />
-              </Route>
-              <Route path="/login" exact={true}>
-                <Login />
-              </Route>
-            </IonRouterOutlet>
-          </IonSplitPane>
+          </IonRouterOutlet>
           <ReactQueryDevtools initialIsOpen={false} />
         </IonReactRouter>
       </QueryClientProvider>

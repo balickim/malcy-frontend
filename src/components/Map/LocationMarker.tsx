@@ -3,7 +3,7 @@ import {useMap} from "react-leaflet";
 import {useEffect} from "react";
 
 interface ILocationMarker {
-  setFooEvents: (value: any) => void,
+  setFooEvents?: (value: any) => void,
   onLocationUpdate: (latlng: L.LatLng) => void,
   setBounds: (value: any) => void
 }
@@ -31,13 +31,13 @@ export default function LocationMarker({ setFooEvents, onLocationUpdate, setBoun
       }
     };
 
-    function onFooEvent(value: any) {
-      setFooEvents((previous: any) => {
-        const newValues = Array.isArray(value) ? value : [value];
-        const filteredNewValues = newValues.filter(nv => !previous.some((pv: any) => pv.id === nv.id));
-        return [...previous, ...filteredNewValues];
-      });
-    }
+    // function onFooEvent(value: any) {
+    //   setFooEvents((previous: any) => {
+    //     const newValues = Array.isArray(value) ? value : [value];
+    //     const filteredNewValues = newValues.filter(nv => !previous.some((pv: any) => pv.id === nv.id));
+    //     return [...previous, ...filteredNewValues];
+    //   });
+    // }
 
     const onMapMove = () => {
       const bounds = map.getBounds();

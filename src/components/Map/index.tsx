@@ -1,10 +1,8 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import {MapContainer, TileLayer, useMapEvents} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
-import {useIonRouter} from "@ionic/react";
 
-import { socket } from "~/api/socket";
 import { IBounds } from "~/types/settlement";
 import PageContainer from "~/components/PageContainer";
 import Settlements from "~/components/Map/Settlements";
@@ -15,61 +13,20 @@ import InvalidateSize from "~/components/Map/InvalidateSize";
 import AddSettlementModal from "~/components/Map/AddSettlementModal";
 
 const Map = () => {
-  const router = useIonRouter();
   const initialBounds: IBounds = {
     northEastLat: 53.43246264935192,
     northEastLng: 14.54695522785187,
     southWestLat: 53.42957340431125,
     southWestLng: 14.542395472526552
   };
-
-  useEffect(() => {
-    const handleUnauthorized = () => {
-      router.push('/login');
-    };
-
-    window.addEventListener('unauthorized', handleUnauthorized);
-    return () => {
-      window.removeEventListener('unauthorized', handleUnauthorized);
-    };
-  }, [router]);
-
-  const [fooEvents, setFooEvents] = useState<any[]>([]);
-  const modalRef = useRef<HTMLIonModalElement>(null);
-  const [playerLocation, setPlayerLocation] = useState<L.LatLng | null>(null);
-  const mapRef = useRef<L.Map>(null);
-  const [bounds, setBounds] = useState<IBounds>(initialBounds)
-
-  async function confirm(values: any) {
-    await fetch(
-      `${import.meta.env.VITE_API_URL}/settlements`,
-      {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values)
-      }
-    )
-
-    modalRef.current?.dismiss();
-  }
-
-  useEffect(() => {
-    function onFooEvent(value: any) {
-      setFooEvents(previous => [...previous, value]);
-    }
-
-    socket.on('foo', onFooEvent);
-    return () => {
-      socket.off('foo', onFooEvent);
-    };
-  }, []);
-
   const cityBounds: L.LatLngBoundsExpression = [
     [53.391874, 14.424565], // south, west point
     [53.516425, 14.653759] // north, east point
   ];
+  const modalAddSettlementRef = useRef<HTMLIonModalElement>(null);
+  const [playerLocation, setPlayerLocation] = useState<L.LatLng | null>(null);
+  const mapRef = useRef<L.Map>(null);
+  const [bounds, setBounds] = useState<IBounds>(initialBounds)
 
   const centerMapOnPlayer = () => {
     if (mapRef.current && playerLocation) {
@@ -78,14 +35,13 @@ const Map = () => {
   };
 
   const LocationFinderDummy = () => {
-    const map = useMapEvents({
+    useMapEvents({
       click(e) {
         console.log(e.latlng);
       },
     });
     return null;
   };
-
   return (
     <PageContainer>
       <MapContainer
@@ -95,13 +51,12 @@ const Map = () => {
         zoom={18}
         minZoom={13}
         maxZoom={18}
-        style={{ height: '100vh', width: '100%' }}
+        style={{ height: 'calc(100vh - 57px)', width: '100%' }}
         maxBounds={cityBounds}
         maxBoundsViscosity={1}
       >
         <InvalidateSize />
         <LocationMarker
-          setFooEvents={setFooEvents}
           onLocationUpdate={setPlayerLocation}
           setBounds={setBounds}
         />
@@ -117,7 +72,7 @@ const Map = () => {
         <AppVersion />
       </MapContainer>
 
-      <AddSettlementModal modalRef={modalRef} />
+      <AddSettlementModal modalRef={modalAddSettlementRef} />
     </PageContainer>
   );
 };

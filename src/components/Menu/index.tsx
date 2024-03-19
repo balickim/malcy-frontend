@@ -1,54 +1,68 @@
 import {
-  IonContent,
   IonIcon,
-  IonItem,
   IonLabel,
-  IonList,
-  IonMenu,
-  IonMenuToggle,
+  IonRouterOutlet,
+  IonTabBar,
+  IonTabButton,
+  IonTabs,
 } from '@ionic/react';
-import { useLocation } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import {
   mapOutline,
   mapSharp,
+  logInOutline,
+  logInSharp
 } from 'ionicons/icons';
 import './style.css';
+import { Redirect } from "react-router";
+
+import Map from "~/components/Map";
+import Login from "~/components/Auth/Login";
 
 interface AppPage {
   url: string;
   iosIcon: string;
   mdIcon: string;
   title: string;
+  Component: React.FC;
 }
 
 const appPages: AppPage[] = [
   {
     title: 'Home',
-    url: '/',
+    url: '/home',
     iosIcon: mapOutline,
-    mdIcon: mapSharp
+    mdIcon: mapSharp,
+    Component: Map
+  },
+  {
+    title: 'Login',
+    url: '/login',
+    iosIcon: logInOutline,
+    mdIcon: logInSharp,
+    Component: Login
   },
 ];
 
 const Menu: React.FC = () => {
-  const location = useLocation();
   return (
-    <IonMenu contentId="main" type="push">
-      <IonContent>
-        <IonList id="inbox-list">
-          {appPages.map((appPage, index) => {
-            return (
-              <IonMenuToggle key={index} autoHide={false}>
-                <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
-                  <IonIcon aria-hidden="true" slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
-                  <IonLabel>{appPage.title}</IonLabel>
-                </IonItem>
-              </IonMenuToggle>
-            );
-          })}
-        </IonList>
-      </IonContent>
-    </IonMenu>
+    <IonTabs>
+      <IonRouterOutlet>
+        <Redirect exact path="/" to="/home" />
+        {appPages.map((page, index) => (
+          <Route key={index} path={page.url} render={() => <page.Component />} exact={true} />
+        ))}
+      </IonRouterOutlet>
+
+      <IonTabBar slot="bottom">
+        {appPages.map((page, index) => (
+          <IonTabButton key={index} tab={page.title.toLowerCase()} href={page.url}>
+            <IonIcon icon={page.iosIcon} />
+            <IonLabel>{page.title}</IonLabel>
+          </IonTabButton>
+        ))}
+      </IonTabBar>
+    </IonTabs>
   );
 };
 

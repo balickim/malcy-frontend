@@ -8,9 +8,11 @@ import { IBounds } from "~/types/settlement";
 import { SettlementDto } from "~/api/settlements/dtos";
 import { getSettlements } from "~/api/settlements/routes";
 import { convertBoundsToSearchParams } from "~/utils/formatters";
+import { socket } from "~/api/socket";
 
 export default function Settlements({ bounds }: { bounds: IBounds }) {
   const [settlements, setSettlements] = useState<SettlementDto[]>([])
+  const [fooEvents, setFooEvents] = useState<any[]>([]);
   const { data, isSuccess} = useQuery({
     queryKey: ['settlementBounds', bounds],
     queryFn: () => getSettlements(new URLSearchParams(convertBoundsToSearchParams(bounds)))
@@ -26,6 +28,17 @@ export default function Settlements({ bounds }: { bounds: IBounds }) {
     }
   }, [isSuccess])
 
+  useEffect(() => {
+    function onFooEvent(value: any) {
+      setFooEvents(previous => [...previous, value]);
+    }
+
+    socket.on('foo', onFooEvent);
+    return () => {
+      socket.off('foo', onFooEvent);
+    };
+  }, []);
+
   const settlementIcon = L.icon({
     iconUrl: 'assets/settlement_0.png',
     iconSize: [35, 35],
@@ -40,6 +53,9 @@ export default function Settlements({ bounds }: { bounds: IBounds }) {
             <pre>{JSON.stringify(markerPos, null, 2)}</pre>
           </Popup>
         </Marker>
+      ))}
+      {fooEvents.map((markerPos, idx) => (
+        <Marker key={idx} position={markerPos} />
       ))}
     </MarkerClusterGroup>
   )

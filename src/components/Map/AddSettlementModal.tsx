@@ -18,6 +18,21 @@ interface IAddSettlementModal {
 export default function AddSettlementModal({ modalRef }: IAddSettlementModal) {
   const [values, setValues] = useState({name: '', lat: '', lng: ''})
 
+  async function confirm() {
+    await fetch(
+      `${import.meta.env.VITE_API_URL}/settlements`,
+      {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values)
+      }
+    )
+
+    modalRef.current?.dismiss();
+  }
+
   return (
     <IonModal
       ref={modalRef}
