@@ -5,43 +5,40 @@ import {
   IonHeader,
   IonInput,
   IonItem,
-  IonList, IonModal,
+  IonList,
+  IonModal,
   IonTitle,
-  IonToolbar
+  IonToolbar,
 } from "@ionic/react";
 import React, { RefObject, useState } from "react";
 
 interface IAddSettlementModal {
-  modalRef: RefObject<HTMLIonModalElement>
+  modalRef: RefObject<HTMLIonModalElement>;
 }
 
 export default function AddSettlementModal({ modalRef }: IAddSettlementModal) {
-  const [values, setValues] = useState({name: '', lat: '', lng: ''})
+  const [values, setValues] = useState({ name: "", lat: "", lng: "" });
 
   async function confirm() {
-    await fetch(
-      `${import.meta.env.VITE_API_URL}/settlements`,
-      {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values)
-      }
-    )
+    await fetch(`${import.meta.env.VITE_API_URL}/settlements`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
 
     modalRef.current?.dismiss();
   }
 
   return (
-    <IonModal
-      ref={modalRef}
-      trigger="open-modal"
-    >
+    <IonModal ref={modalRef} trigger="open-modal">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={() => modalRef.current?.dismiss()}>Cancel</IonButton>
+            <IonButton onClick={() => modalRef.current?.dismiss()}>
+              Cancel
+            </IonButton>
           </IonButtons>
           <IonTitle>Welcome</IonTitle>
           <IonButtons slot="end">
@@ -57,8 +54,13 @@ export default function AddSettlementModal({ modalRef }: IAddSettlementModal) {
             <IonInput
               label="Name"
               value={values.name}
-              // @ts-ignore
-              onIonChange={(event) => setValues(prevState => ({...prevState, name: event.detail.value}))}
+              onIonChange={(event) =>
+                // @ts-expect-error blah blah blah
+                setValues((prevState) => ({
+                  ...prevState,
+                  name: event.detail.value,
+                }))
+              }
             />
           </IonItem>
 
@@ -66,8 +68,13 @@ export default function AddSettlementModal({ modalRef }: IAddSettlementModal) {
             <IonInput
               label="Lat"
               value={values.lat}
-              // @ts-ignore
-              onIonChange={(event) => setValues(prevState => ({...prevState, lat: event.detail.value}))}
+              onIonChange={(event) =>
+                // @ts-expect-error blah blah blah
+                setValues((prevState) => ({
+                  ...prevState,
+                  lat: event.detail.value,
+                }))
+              }
             />
           </IonItem>
 
@@ -75,12 +82,17 @@ export default function AddSettlementModal({ modalRef }: IAddSettlementModal) {
             <IonInput
               label="Lng"
               value={values.lng}
-              // @ts-ignore
-              onIonChange={(event) => setValues(prevState => ({...prevState, lng: event.detail.value}))}
+              onIonChange={(event) =>
+                // @ts-expect-error blah blah blah
+                setValues((prevState) => ({
+                  ...prevState,
+                  lng: event.detail.value,
+                }))
+              }
             />
           </IonItem>
         </IonList>
       </IonContent>
     </IonModal>
-  )
+  );
 }

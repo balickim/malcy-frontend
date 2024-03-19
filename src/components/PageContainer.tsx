@@ -1,15 +1,13 @@
-import { IonContent, IonPage } from '@ionic/react';
+import { IonContent, IonPage } from "@ionic/react";
 
 interface IPage {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 const PageContainer = ({ children }: IPage) => {
   return (
     <IonPage>
-      <IonContent fullscreen>
-        {children}
-      </IonContent>
+      <IonContent fullscreen>{children}</IonContent>
     </IonPage>
   );
 };

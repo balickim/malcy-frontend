@@ -5,23 +5,24 @@ import {
   IonHeader,
   IonModal,
   IonTitle,
-  IonToolbar
+  IonToolbar,
 } from "@ionic/react";
-import React from "react";
 import { SettlementDto } from "~/api/settlements/dtos";
+import React from "react";
 
 interface IViewSettlementModal {
-  isOpen: boolean
-  setIsOpen: (value: boolean) => void
-  settlementData?: SettlementDto
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
+  settlementData?: SettlementDto;
 }
 
-export default function ViewSettlementModal({ isOpen, setIsOpen, settlementData }: IViewSettlementModal) {
+export default function ViewSettlementModal({
+  isOpen,
+  setIsOpen,
+  settlementData,
+}: IViewSettlementModal) {
   return (
-    <IonModal
-      isOpen={isOpen}
-      onWillDismiss={() => setIsOpen(false)}
-    >
+    <IonModal isOpen={isOpen} onWillDismiss={() => setIsOpen(false)}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -31,9 +32,9 @@ export default function ViewSettlementModal({ isOpen, setIsOpen, settlementData 
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <img src={'assets/settlement_0.png'} alt="settlement_0"/>
+        <img src={"assets/settlement_0.png"} alt="settlement_0" />
         <pre>{JSON.stringify(settlementData, null, 2)}</pre>
       </IonContent>
     </IonModal>
-  )
+  );
 }

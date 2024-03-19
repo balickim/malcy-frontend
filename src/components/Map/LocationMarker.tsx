@@ -1,16 +1,20 @@
 import L from "leaflet";
-import {useMap} from "react-leaflet";
-import {useEffect} from "react";
+import { useEffect } from "react";
+import { useMap } from "react-leaflet";
+
+import { IBounds } from "~/types/settlement";
 
 interface ILocationMarker {
-  setFooEvents?: (value: any) => void,
-  onLocationUpdate: (latlng: L.LatLng) => void,
-  setBounds: (value: any) => void
+  onLocationUpdate: (latlng: L.LatLng) => void;
+  setBounds: (value: IBounds) => void;
 }
 
-export default function LocationMarker({ setFooEvents, onLocationUpdate, setBounds }: ILocationMarker) {
+export default function LocationMarker({
+  onLocationUpdate,
+  setBounds,
+}: ILocationMarker) {
   const walkingManIcon = L.icon({
-    iconUrl: 'assets/player.gif',
+    iconUrl: "assets/player.gif",
     iconSize: [32, 32],
     iconAnchor: [16, 32],
   });
@@ -31,14 +35,6 @@ export default function LocationMarker({ setFooEvents, onLocationUpdate, setBoun
       }
     };
 
-    // function onFooEvent(value: any) {
-    //   setFooEvents((previous: any) => {
-    //     const newValues = Array.isArray(value) ? value : [value];
-    //     const filteredNewValues = newValues.filter(nv => !previous.some((pv: any) => pv.id === nv.id));
-    //     return [...previous, ...filteredNewValues];
-    //   });
-    // }
-
     const onMapMove = () => {
       const bounds = map.getBounds();
 
@@ -47,17 +43,16 @@ export default function LocationMarker({ setFooEvents, onLocationUpdate, setBoun
       const southWestLat = bounds.getSouthWest().lat;
       const southWestLng = bounds.getSouthWest().lng;
 
-      setBounds({ northEastLat, northEastLng, southWestLat, southWestLng })
+      setBounds({ northEastLat, northEastLng, southWestLat, southWestLng });
     };
 
-    map.on('locationfound', onLocationFound);
-    map.on('moveend', onMapMove);
+    map.on("locationfound", onLocationFound);
+    map.on("moveend", onMapMove);
     return () => {
       map.stopLocate();
-      map.off('locationfound', onLocationFound);
-      map.off('moveend', onMapMove);
+      map.off("locationfound", onLocationFound);
+      map.off("moveend", onMapMove);
     };
-
   }, [map]);
 
   return null;

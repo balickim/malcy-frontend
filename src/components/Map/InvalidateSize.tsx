@@ -1,5 +1,5 @@
-import {useMap} from "react-leaflet";
-import {useEffect} from "react";
+import { useEffect } from "react";
+import { useMap } from "react-leaflet";
 
 export default function InvalidateSize() {
   const map = useMap();

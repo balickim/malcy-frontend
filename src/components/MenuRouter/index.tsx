@@ -5,21 +5,15 @@ import {
   IonTabBar,
   IonTabButton,
   IonTabs,
-} from '@ionic/react';
-import { Route } from 'react-router-dom';
-import {
-  mapOutline,
-  mapSharp,
-  logInOutline,
-  logInSharp
-} from 'ionicons/icons';
-import './style.css';
+} from "@ionic/react";
+import { mapOutline, mapSharp, logInOutline, logInSharp } from "ionicons/icons";
 import { Redirect } from "react-router";
+import { Route } from "react-router-dom";
 
-import Map from "~/pages/Map";
 import Login from "~/pages/Auth";
+import Map from "~/pages/Map";
 
-interface AppPage {
+interface IAppPage {
   url: string;
   iosIcon: string;
   mdIcon: string;
@@ -27,20 +21,20 @@ interface AppPage {
   Component: React.FC;
 }
 
-const appPages: AppPage[] = [
+const appPages: IAppPage[] = [
   {
-    title: 'Home',
-    url: '/home',
+    title: "Home",
+    url: "/home",
     iosIcon: mapOutline,
     mdIcon: mapSharp,
-    Component: Map
+    Component: Map,
   },
   {
-    title: 'Login',
-    url: '/login',
+    title: "Login",
+    url: "/login",
     iosIcon: logInOutline,
     mdIcon: logInSharp,
-    Component: Login
+    Component: Login,
   },
 ];
 
@@ -50,13 +44,22 @@ const MenuRouter: React.FC = () => {
       <IonRouterOutlet>
         <Redirect exact path="/" to="/home" />
         {appPages.map((page, index) => (
-          <Route key={index} path={page.url} render={() => <page.Component />} exact={true} />
+          <Route
+            key={index}
+            path={page.url}
+            render={() => <page.Component />}
+            exact={true}
+          />
         ))}
       </IonRouterOutlet>
 
       <IonTabBar slot="bottom">
         {appPages.map((page, index) => (
-          <IonTabButton key={index} tab={page.title.toLowerCase()} href={page.url}>
+          <IonTabButton
+            key={index}
+            tab={page.title.toLowerCase()}
+            href={page.url}
+          >
             <IonIcon icon={page.iosIcon} />
             <IonLabel>{page.title}</IonLabel>
           </IonTabButton>
