@@ -1,10 +1,11 @@
 import { IonHeader, IonToolbar, IonTitle, IonButton } from "@ionic/react";
+import { observer } from "mobx-react-lite";
 import React from "react";
 
 import PageContainer from "~/components/PageContainer";
 import store from "~/store";
 
-const Auth: React.FC = () => {
+export default observer(function Account() {
   const { userStore } = store;
 
   const handleLogout = async () => {
@@ -26,6 +27,4 @@ const Auth: React.FC = () => {
       </IonButton>
     </PageContainer>
   );
-};
-
-export default Auth;
+});

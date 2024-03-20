@@ -58,7 +58,10 @@ export async function fetchWrapper<T>(
 
     if (response.status === 404) throw new Error("404, Not found");
     if (response.status === 500) throw new Error("500, internal server error");
-    throw new Error(`HTTP error! status: ${response.status}`);
+    const res = await response.json();
+    throw new Error(
+      res.message ? res.message : `HTTP error! status: ${response.status}`,
+    );
   } catch (error: unknown) {
     if (error instanceof Error) {
       toast.error(error.message);
