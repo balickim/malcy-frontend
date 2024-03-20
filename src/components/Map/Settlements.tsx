@@ -27,7 +27,6 @@ export default function Settlements({ bounds }: ISettlements) {
     queryKey: ["settlementBounds", bounds],
     queryFn: () =>
       getSettlements(new URLSearchParams(convertBoundsToSearchParams(bounds))),
-    refetchInterval: 5000,
   });
 
   useEffect(() => {
@@ -82,7 +81,7 @@ export default function Settlements({ bounds }: ISettlements) {
             position={settlement}
             icon={settlementIcon(
               settlement.type,
-              settlement.userid === userStore.id,
+              settlement.userid === userStore.user.id,
             )}
             eventHandlers={{
               click: () => {

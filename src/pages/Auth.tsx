@@ -31,19 +31,15 @@ const Auth: React.FC = () => {
     const res = await mutation.mutateAsync({ email, password });
 
     if (res) {
-      console.log(res);
       userStore.logIn(res);
       router.push("/");
     }
   };
 
   const handleLogout = async () => {
-    // const res = await mutation.mutateAsync({ email, password });
-    //
-    // if (res) {
     userStore.logOut();
-    router.push("/login");
-    // }
+    const event = new CustomEvent("unauthorized");
+    window.dispatchEvent(event);
   };
 
   return (

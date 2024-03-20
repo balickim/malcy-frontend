@@ -1,5 +1,6 @@
 import { toast } from "react-hot-toast";
 
+import { userStore } from "~/store/userStore";
 import { getAccessToken, setAccessToken } from "~/utils/cookies";
 
 async function tryRefreshToken() {
@@ -48,6 +49,10 @@ export async function fetchWrapper<T>(
         if (response.ok) {
           return response.json() as Promise<T>;
         }
+      } else {
+        userStore.logOut();
+        const event = new CustomEvent("unauthorized");
+        window.dispatchEvent(event);
       }
     }
 

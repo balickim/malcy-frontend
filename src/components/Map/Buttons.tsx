@@ -16,7 +16,7 @@ export default function Buttons({ centerMapOnPlayer }: IButtons) {
         style={{
           position: "absolute",
           bottom: "10%",
-          right: "5%",
+          right: "2%",
           zIndex: 1000,
         }}
       >
@@ -27,7 +27,7 @@ export default function Buttons({ centerMapOnPlayer }: IButtons) {
         style={{
           position: "absolute",
           bottom: "5%",
-          right: "5%",
+          right: "2%",
           zIndex: 1000,
         }}
       >

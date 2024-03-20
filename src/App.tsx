@@ -1,16 +1,10 @@
-import {
-  IonApp,
-  IonRouterOutlet,
-  setupIonicReact,
-  useIonRouter,
-} from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
+import { IonApp, setupIonicReact } from "@ionic/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import React, { useEffect } from "react";
+import React from "react";
 import { Toaster } from "react-hot-toast";
 
-import MenuRouter from "~/components/MenuRouter";
+import MenuRouter from "~/components/MenuRouter/MenuRouter";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -34,29 +28,13 @@ import "./theme/variables.css";
 setupIonicReact();
 
 const App = () => {
-  const router = useIonRouter();
   const queryClient = new QueryClient();
-
-  useEffect(() => {
-    const handleUnauthorized = () => {
-      router.push("/login");
-    };
-
-    window.addEventListener("unauthorized", handleUnauthorized);
-    return () => {
-      window.removeEventListener("unauthorized", handleUnauthorized);
-    };
-  }, [router]);
 
   return (
     <IonApp>
       <QueryClientProvider client={queryClient}>
-        <IonReactRouter>
-          <IonRouterOutlet id="main">
-            <MenuRouter />
-          </IonRouterOutlet>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </IonReactRouter>
+        <MenuRouter />
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
 
       <Toaster position={"top-right"} />
