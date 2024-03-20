@@ -7,9 +7,9 @@ import {
   IonInput,
   IonButton,
   IonLoading,
-  useIonRouter,
 } from "@ionic/react";
 import { useMutation } from "@tanstack/react-query";
+import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
 import { ILoginDto } from "~/api/auth/dtos";
@@ -17,8 +17,7 @@ import { logIn } from "~/api/auth/routes";
 import PageContainer from "~/components/PageContainer";
 import store from "~/store";
 
-const Auth: React.FC = () => {
-  const router = useIonRouter();
+export default observer(function Auth() {
   const { userStore } = store;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,14 +31,9 @@ const Auth: React.FC = () => {
 
     if (res) {
       userStore.logIn(res);
-      router.push("/");
+      const event = new CustomEvent("login");
+      window.dispatchEvent(event);
     }
-  };
-
-  const handleLogout = async () => {
-    userStore.logOut();
-    const event = new CustomEvent("unauthorized");
-    window.dispatchEvent(event);
   };
 
   return (
@@ -47,7 +41,7 @@ const Auth: React.FC = () => {
       <IonLoading isOpen={mutation.isPending} message="Loading..." />
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Logowanie</IonTitle>
+          <IonTitle>Logowanie/Rejestracja</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
@@ -69,13 +63,7 @@ const Auth: React.FC = () => {
         <IonButton expand="block" onClick={handleLogin}>
           Zaloguj się
         </IonButton>
-
-        <IonButton expand="block" onClick={handleLogout}>
-          Wyloguj się
-        </IonButton>
       </IonContent>
     </PageContainer>
   );
-};
-
-export default Auth;
+});

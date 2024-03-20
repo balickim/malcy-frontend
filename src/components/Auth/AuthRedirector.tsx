@@ -6,12 +6,17 @@ const AuthRedirector: React.FC = () => {
 
   useEffect(() => {
     const handleUnauthorized = () => {
-      router.push("/login");
+      router.push("/auth");
+    };
+    const handleLogin = () => {
+      router.push("/home");
     };
 
     window.addEventListener("unauthorized", handleUnauthorized);
+    window.addEventListener("login", handleLogin);
     return () => {
       window.removeEventListener("unauthorized", handleUnauthorized);
+      window.removeEventListener("login", handleLogin);
     };
   }, [router]);
 
