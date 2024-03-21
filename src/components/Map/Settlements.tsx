@@ -78,7 +78,7 @@ export default function Settlements({ bounds }: ISettlements) {
             position={settlement}
             icon={settlementIcon(
               settlement.type,
-              settlement.user_id === userStore.user.id,
+              settlement.user.id === userStore.user.id,
             )}
             eventHandlers={{
               click: () => {

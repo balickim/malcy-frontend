@@ -48,13 +48,13 @@ export default function ViewSettlementModal({
                   User Profile
                 </h4>
                 <p className="text-sm text-gray-500">
-                  Nick: {settlementData.user_nick}
+                  Nick: {settlementData.user.nick}
                 </p>
                 <p className="text-sm text-gray-500">
-                  Email: {settlementData.user_email}
+                  Email: {settlementData.user.email}
                 </p>
                 <p className="text-sm text-gray-500">
-                  Created At: {settlementData.user_createdAt}
+                  Created At: {settlementData.user.createdAt}
                 </p>
               </div>
 
