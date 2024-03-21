@@ -4,13 +4,12 @@ import React, { useEffect, useState } from "react";
 import { Marker } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 
-import { SettlementDto, SettlementType } from "~/api/settlements/dtos";
+import { ISettlementDto, SettlementType } from "~/api/settlements/dtos";
 import { getSettlements } from "~/api/settlements/routes";
 import { socket } from "~/api/socket";
 import ViewSettlementModal from "~/components/Map/ViewSettlementModal";
 import store from "~/store";
 import { IBounds } from "~/types/settlement";
-import { convertBoundsToSearchParams } from "~/utils/formatters";
 
 interface ISettlements {
   bounds: IBounds;
@@ -19,14 +18,12 @@ interface ISettlements {
 export default function Settlements({ bounds }: ISettlements) {
   const { userStore } = store;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [settlements, setSettlements] = useState<SettlementDto[]>([]);
-  const [selectedSettlementData, setSelectedSettlementData] = useState<
-    SettlementDto | undefined
-  >();
+  const [settlements, setSettlements] = useState<ISettlementDto[]>([]);
+  const [selectedSettlementData, setSelectedSettlementData] =
+    useState<ISettlementDto>();
   const { data, isSuccess } = useQuery({
     queryKey: ["settlementBounds", bounds],
-    queryFn: () =>
-      getSettlements(new URLSearchParams(convertBoundsToSearchParams(bounds))),
+    queryFn: () => getSettlements(bounds),
   });
 
   useEffect(() => {
@@ -45,7 +42,7 @@ export default function Settlements({ bounds }: ISettlements) {
   }, [isSuccess, data]);
 
   useEffect(() => {
-    function onFooEvent(value: SettlementDto) {
+    function onFooEvent(value: ISettlementDto) {
       setSettlements((previous) => {
         const updatedSettlements = new Map(previous.map((s) => [s.id, s]));
         updatedSettlements.set(value.id, value);
@@ -81,7 +78,7 @@ export default function Settlements({ bounds }: ISettlements) {
             position={settlement}
             icon={settlementIcon(
               settlement.type,
-              settlement.userid === userStore.user.id,
+              settlement.user_id === userStore.user.id,
             )}
             eventHandlers={{
               click: () => {

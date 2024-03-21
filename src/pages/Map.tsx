@@ -4,7 +4,6 @@ import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 import AddSettlementModal from "~/components/Map/AddSettlementModal";
-import AppVersion from "~/components/Map/AppVersion";
 import Buttons from "~/components/Map/Buttons";
 import InvalidateSize from "~/components/Map/InvalidateSize";
 import LocationMarker from "~/components/Map/LocationMarker";
@@ -71,7 +70,6 @@ const Map = () => {
         />
 
         <LocationFinderDummy />
-        <AppVersion />
       </MapContainer>
 
       <AddSettlementModal modalRef={modalAddSettlementRef} />

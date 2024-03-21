@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
 import { Toaster } from "react-hot-toast";
 
+import AppVersion from "~/components/AppVersion";
 import MenuRouter from "~/components/MenuRouter/MenuRouter";
 
 /* Core CSS required for Ionic components to work properly */
@@ -38,6 +39,7 @@ const App = () => {
       </QueryClientProvider>
 
       <Toaster position={"top-right"} />
+      <AppVersion />
     </IonApp>
   );
 };
