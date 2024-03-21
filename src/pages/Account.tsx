@@ -22,6 +22,8 @@ export default observer(function Account() {
         </IonToolbar>
       </IonHeader>
 
+      <pre>{JSON.stringify(userStore, null, 2)}</pre>
+
       <IonButton expand="block" onClick={handleLogout}>
         Wyloguj się
       </IonButton>
