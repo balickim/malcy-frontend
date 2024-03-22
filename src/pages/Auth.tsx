@@ -59,7 +59,7 @@ export default observer(function Auth() {
           const res = await mutation.mutateAsync(values);
 
           if (res) {
-            userStore.logIn(res);
+            userStore.logIn(res.data);
             const event = new CustomEvent("login");
             window.dispatchEvent(event);
           }

@@ -29,7 +29,7 @@ export default function Settlements({ bounds }: ISettlements) {
   useEffect(() => {
     if (isSuccess) {
       setSettlements((previous) => {
-        const newValues = Array.isArray(data) ? data : [data];
+        const newValues = Array.isArray(data?.data) ? data?.data : [data?.data];
         const updatedSettlements = new Map(previous.map((s) => [s.id, s]));
 
         newValues.forEach((nv) => {
@@ -39,7 +39,7 @@ export default function Settlements({ bounds }: ISettlements) {
         return Array.from(updatedSettlements.values());
       });
     }
-  }, [isSuccess, data]);
+  }, [isSuccess, data?.data]);
 
   useEffect(() => {
     function onFooEvent(value: ISettlementDto) {

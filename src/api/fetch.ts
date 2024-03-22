@@ -1,6 +1,7 @@
 import { toast } from "react-hot-toast";
 
 import { userStore } from "~/store/userStore";
+import { IApiResponse } from "~/types/common";
 import { getAccessToken, setAccessToken } from "~/utils/cookies";
 
 async function tryRefreshToken() {
@@ -8,8 +9,8 @@ async function tryRefreshToken() {
     method: "POST",
     credentials: "include",
   });
-  const res = await response.json();
-  if (res.access_token) return res.access_token;
+  const res: IApiResponse<{ access_token: string }> = await response.json();
+  if (res.data.access_token) return res.data.access_token;
   return false;
 }
 
