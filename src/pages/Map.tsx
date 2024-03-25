@@ -1,78 +1,67 @@
 import L from "leaflet";
 import React, { useRef, useState } from "react";
-import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 import AddSettlementModal from "~/components/Map/AddSettlementModal";
 import Buttons from "~/components/Map/Buttons";
 import InvalidateSize from "~/components/Map/InvalidateSize";
-import LocationMarker from "~/components/Map/LocationMarker";
+import { LocationFinderDummy } from "~/components/Map/LocationFinderDummy";
+import { MapBoundsUpdater } from "~/components/Map/MapBoundsUpdater";
 import Settlements from "~/components/Map/Settlements";
+import { UserLocationMarker } from "~/components/Map/UserLocationMarker";
 import PageContainer from "~/components/PageContainer";
 import { IBounds } from "~/types/settlement";
+import { centerMapOnPlayer } from "~/utils/map";
+import {
+  IGeoLocation,
+  useGeoLocationWatcher,
+} from "~/utils/useGeoLocationWatcher";
 
 const Map = () => {
-  const initialBounds: IBounds = {
-    northEastLat: 53.43246264935192,
-    northEastLng: 14.54695522785187,
-    southWestLat: 53.42957340431125,
-    southWestLng: 14.542395472526552,
-  };
+  const mapRef = useRef<L.Map>(null);
   const cityBounds: L.LatLngBoundsExpression = [
     [53.391874, 14.424565], // south, west point
     [53.516425, 14.653759], // north, east point
   ];
+
+  const [playerLocation, setPlayerLocation] = useState<IGeoLocation>();
+  useGeoLocationWatcher({ setPlayerLocation });
+
+  const [bounds, setBounds] = useState<IBounds>();
   const modalAddSettlementRef = useRef<HTMLIonModalElement>(null);
-  const [playerLocation, setPlayerLocation] = useState<L.LatLng | null>(null);
-  const mapRef = useRef<L.Map>(null);
-  const [bounds, setBounds] = useState<IBounds>(initialBounds);
-
-  const centerMapOnPlayer = () => {
-    if (mapRef.current && playerLocation) {
-      mapRef.current.flyTo(playerLocation, mapRef.current.getZoom(), {
-        animate: true,
-      });
-    }
-  };
-
-  const LocationFinderDummy = () => {
-    useMapEvents({
-      click(e) {
-        console.log(e.latlng);
-      },
-    });
-    return null;
-  };
   return (
     <PageContainer>
-      <MapContainer
-        ref={mapRef}
-        id="map"
-        center={[53.431018, 14.544677]}
-        zoom={18}
-        minZoom={13}
-        maxZoom={18}
-        style={{ height: "calc(100vh - 57px)", width: "100%" }}
-        maxBounds={cityBounds}
-        maxBoundsViscosity={1}
-      >
-        <InvalidateSize />
-        <LocationMarker
-          onLocationUpdate={setPlayerLocation}
-          setBounds={setBounds}
-        />
-        <Settlements bounds={bounds} />
-        <Buttons centerMapOnPlayer={centerMapOnPlayer} />
+      {playerLocation ? (
+        <MapContainer
+          ref={mapRef}
+          id="map"
+          center={[playerLocation.lat, playerLocation.lng]}
+          zoom={18}
+          minZoom={13}
+          maxZoom={18}
+          style={{ height: "calc(100vh - 57px)", width: "100%" }}
+          maxBounds={cityBounds}
+          maxBoundsViscosity={1}
+        >
+          <UserLocationMarker location={playerLocation} />
+          <MapBoundsUpdater setBounds={setBounds} />
+          <Settlements bounds={bounds} />
+          <Buttons
+            centerMapOnPlayer={() => centerMapOnPlayer(mapRef, playerLocation)}
+          />
 
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
 
-        <LocationFinderDummy />
-      </MapContainer>
+          <AddSettlementModal modalRef={modalAddSettlementRef} />
 
-      <AddSettlementModal modalRef={modalAddSettlementRef} />
+          <InvalidateSize />
+          <LocationFinderDummy />
+        </MapContainer>
+      ) : null}
     </PageContainer>
   );
 };

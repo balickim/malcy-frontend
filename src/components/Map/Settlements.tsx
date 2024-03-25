@@ -12,7 +12,7 @@ import store from "~/store";
 import { IBounds } from "~/types/settlement";
 
 interface ISettlements {
-  bounds: IBounds;
+  bounds?: IBounds;
 }
 
 export default function Settlements({ bounds }: ISettlements) {
@@ -23,7 +23,7 @@ export default function Settlements({ bounds }: ISettlements) {
     useState<ISettlementDto>();
   const { data, isSuccess } = useQuery({
     queryKey: ["settlementBounds", bounds],
-    queryFn: () => getSettlements(bounds),
+    queryFn: () => (bounds ? getSettlements(bounds) : undefined),
   });
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function Settlements({ bounds }: ISettlements) {
   }, [isSuccess, data?.data]);
 
   useEffect(() => {
-    function onFooEvent(value: ISettlementDto) {
+    function newSettlement(value: ISettlementDto) {
       setSettlements((previous) => {
         const updatedSettlements = new Map(previous.map((s) => [s.id, s]));
         updatedSettlements.set(value.id, value);
@@ -50,9 +50,9 @@ export default function Settlements({ bounds }: ISettlements) {
       });
     }
 
-    socket.on("newSettlement", onFooEvent);
+    socket.on("newSettlement", newSettlement);
     return () => {
-      socket.off("newSettlement", onFooEvent);
+      socket.off("newSettlement", newSettlement);
     };
   }, []);
 
