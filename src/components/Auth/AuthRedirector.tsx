@@ -9,7 +9,7 @@ const AuthRedirector: React.FC = () => {
       router.push("/auth");
     };
     const handleLogin = () => {
-      router.push("/home");
+      router.push("/");
     };
 
     window.addEventListener("unauthorized", handleUnauthorized);

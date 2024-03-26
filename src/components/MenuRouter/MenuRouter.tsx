@@ -40,7 +40,7 @@ interface IMenuItem {
 
 const appPages: IAppPage[] = [
   {
-    url: "/home",
+    url: "/",
     Component: Map,
   },
   {
@@ -57,14 +57,14 @@ export default observer(function MenuRouter() {
   const { userStore } = store;
 
   const menuItems: IMenuItem[] = [
-    {
-      title: "Home",
-      url: "/home",
-      iosIcon: mapOutline,
-      mdIcon: mapSharp,
-    },
     ...(userStore.isLoggedIn
       ? [
+          {
+            title: "Home",
+            url: "/",
+            iosIcon: mapOutline,
+            mdIcon: mapSharp,
+          },
           {
             title: "Konto",
             url: "/account",
@@ -88,27 +88,27 @@ export default observer(function MenuRouter() {
         <>
           <IonTabs>
             <IonRouterOutlet>
-              <Route exact path="/" render={() => <Redirect to="/home" />} />
-              {appPages.map((page, index) => (
+              {appPages.map((page) => (
                 <Route
-                  key={index}
+                  key={page.url}
                   path={page.url}
-                  render={() =>
-                    !userStore.isLoggedIn && page.url !== "/auth" ? (
-                      <Redirect to="/auth" />
-                    ) : (
-                      <page.Component />
-                    )
-                  }
+                  render={() => {
+                    if (!userStore.isLoggedIn && page.url !== "/auth")
+                      return <Redirect to="/auth" />;
+                    if (userStore.isLoggedIn && page.url === "/auth")
+                      return <Redirect to="/" />;
+
+                    return <page.Component />;
+                  }}
                   exact={true}
                 />
               ))}
             </IonRouterOutlet>
 
             <IonTabBar slot="bottom">
-              {menuItems.map((page, index) => (
+              {menuItems.map((page) => (
                 <IonTabButton
-                  key={index}
+                  key={page.url}
                   tab={page.title.toLowerCase()}
                   href={page.url}
                 >

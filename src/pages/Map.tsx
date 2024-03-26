@@ -8,6 +8,7 @@ import Buttons from "~/components/Map/Buttons";
 import InvalidateSize from "~/components/Map/InvalidateSize";
 import { LocationFinderDummy } from "~/components/Map/LocationFinderDummy";
 import { MapBoundsUpdater } from "~/components/Map/MapBoundsUpdater";
+import { NoPlayerPositionInfo } from "~/components/Map/NoPlayerPositionInfo";
 import Settlements from "~/components/Map/Settlements";
 import { UserLocationMarker } from "~/components/Map/UserLocationMarker";
 import PageContainer from "~/components/PageContainer";
@@ -61,7 +62,9 @@ const Map = () => {
           <InvalidateSize />
           <LocationFinderDummy />
         </MapContainer>
-      ) : null}
+      ) : (
+        <NoPlayerPositionInfo />
+      )}
     </PageContainer>
   );
 };
