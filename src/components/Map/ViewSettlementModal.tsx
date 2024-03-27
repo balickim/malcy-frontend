@@ -7,19 +7,21 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 
 import { ISettlementDto, SettlementType } from "~/api/settlements/dtos";
+import { getSettlementById } from "~/api/settlements/routes";
 
 interface IViewSettlementModal {
   isOpen: boolean;
-  setIsOpen: (value: boolean) => void;
+  closeModal: () => void;
   settlementData?: ISettlementDto;
 }
 
 export default function ViewSettlementModal({
   isOpen,
-  setIsOpen,
+  closeModal,
   settlementData,
 }: IViewSettlementModal) {
   const settlementImage = {
@@ -28,13 +30,21 @@ export default function ViewSettlementModal({
     [SettlementType.city]: "assets/settlement_city.png",
   };
 
+  const { data, isPending } = useQuery({
+    queryKey: ["settlementId", settlementData?.id],
+    queryFn: () =>
+      settlementData ? getSettlementById(settlementData.id) : undefined,
+    enabled: !!settlementData,
+    refetchOnWindowFocus: "always",
+  });
+
   if (!settlementData) return null;
   return (
-    <IonModal isOpen={isOpen} onWillDismiss={() => setIsOpen(false)}>
+    <IonModal isOpen={isOpen} onWillDismiss={() => closeModal()}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={() => setIsOpen(false)}>Cancel</IonButton>
+            <IonButton onClick={() => closeModal()}>Cancel</IonButton>
           </IonButtons>
           <IonTitle>{settlementData?.name}</IonTitle>
         </IonToolbar>
@@ -84,6 +94,26 @@ export default function ViewSettlementModal({
               </div>
             </div>
           </div>
+        </div>
+
+        <div className={"flex flex-col items-center"}>
+          <p className={"text-xl"}>Garnizon</p>
+          <p>
+            Rycerze:{" "}
+            {isPending ? (
+              <div className="w-48 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700" />
+            ) : (
+              data?.data.knights
+            )}
+          </p>
+          <p>
+            Łucznicy:{" "}
+            {isPending ? (
+              <div className="w-48 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700" />
+            ) : (
+              data?.data.archers
+            )}
+          </p>
         </div>
       </IonContent>
     </IonModal>

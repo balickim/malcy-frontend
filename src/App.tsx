@@ -2,6 +2,7 @@ import { IonApp, setupIonicReact } from "@ionic/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { Toaster } from "react-hot-toast";
 
 import AppVersion from "~/components/AppVersion";
@@ -28,15 +29,25 @@ import "./theme/variables.css";
 
 setupIonicReact();
 
+function Fallback() {
+  return (
+    <div>
+      <p>Something went wrong</p>
+    </div>
+  );
+}
+
 const App = () => {
   const queryClient = new QueryClient();
 
   return (
     <IonApp>
-      <QueryClientProvider client={queryClient}>
-        <MenuRouter />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      <ErrorBoundary FallbackComponent={Fallback}>
+        <QueryClientProvider client={queryClient}>
+          <MenuRouter />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </ErrorBoundary>
 
       <Toaster position={"top-right"} />
       <AppVersion />

@@ -69,6 +69,11 @@ export default function Settlements({ bounds }: ISettlements) {
     });
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedSettlementData(undefined);
+  };
+
   return (
     <>
       <MarkerClusterGroup chunkedLoading>
@@ -92,7 +97,7 @@ export default function Settlements({ bounds }: ISettlements) {
 
       <ViewSettlementModal
         isOpen={isModalOpen}
-        setIsOpen={setIsModalOpen}
+        closeModal={closeModal}
         settlementData={selectedSettlementData}
       />
     </>

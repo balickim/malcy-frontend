@@ -40,7 +40,7 @@ export function useGeoLocationWatcher({
               toast.error("Access to location denied");
               break;
             case error.POSITION_UNAVAILABLE:
-              toast.error("Location unavailable");
+              console.error("Location unavailable");
               break;
             case error.TIMEOUT:
               toast.error("Location request timed out");

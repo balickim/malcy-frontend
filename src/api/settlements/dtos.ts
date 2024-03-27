@@ -19,3 +19,8 @@ export interface ISettlementDto {
     updatedAt: string;
   };
 }
+
+export interface ISettlementDetailsDto {
+  knights: number;
+  archers: number;
+}

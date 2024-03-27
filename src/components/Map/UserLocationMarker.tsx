@@ -30,7 +30,9 @@ export function UserLocationMarker({
       lng: location.lng,
     });
 
-    socket.on("location:error", (args) => toast.error(JSON.stringify(args)));
+    socket.on("location:error", (args) =>
+      toast.error(args, { duration: 10000 }),
+    );
     return () => {
       socket.off("location:error");
     };
