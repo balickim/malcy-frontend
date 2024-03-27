@@ -7,7 +7,7 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import { ISettlementDto, SettlementType } from "~/api/settlements/dtos";
 import { getSettlements } from "~/api/settlements/routes";
 import { socket } from "~/api/socket";
-import ViewSettlementModal from "~/components/Map/ViewSettlementModal";
+import ViewSettlementModal from "~/components/Settlement/ViewSettlementModal";
 import store from "~/store";
 import { IBounds } from "~/types/settlement";
 

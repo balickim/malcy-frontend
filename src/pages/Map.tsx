@@ -3,15 +3,15 @@ import React, { useRef, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-import AddSettlementModal from "~/components/Map/AddSettlementModal";
 import Buttons from "~/components/Map/Buttons";
 import InvalidateSize from "~/components/Map/InvalidateSize";
 import { LocationFinderDummy } from "~/components/Map/LocationFinderDummy";
 import { MapBoundsUpdater } from "~/components/Map/MapBoundsUpdater";
 import { NoPlayerPositionInfo } from "~/components/Map/NoPlayerPositionInfo";
-import Settlements from "~/components/Map/Settlements";
 import { UserLocationMarker } from "~/components/Map/UserLocationMarker";
 import PageContainer from "~/components/PageContainer";
+import AddSettlementModal from "~/components/Settlement/AddSettlementModal";
+import Settlements from "~/components/Settlement/Settlements";
 import { IBounds } from "~/types/settlement";
 import { centerMapOnPlayer } from "~/utils/map";
 import {

@@ -24,3 +24,9 @@ export interface ISettlementDetailsDto {
   knights: number;
   archers: number;
 }
+
+export interface IRecruitDto {
+  settlementId: string;
+  unitCount: number;
+  unitType: "knights" | "archers";
+}

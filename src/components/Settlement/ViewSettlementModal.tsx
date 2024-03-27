@@ -7,11 +7,12 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useQuery } from "@tanstack/react-query";
 import React from "react";
 
 import { ISettlementDto, SettlementType } from "~/api/settlements/dtos";
-import { getSettlementById } from "~/api/settlements/routes";
+import { Garrison } from "~/components/Settlement/Garrison";
+import { Recruitments } from "~/components/Settlement/Recruitments";
+import store from "~/store";
 
 interface IViewSettlementModal {
   isOpen: boolean;
@@ -24,19 +25,12 @@ export default function ViewSettlementModal({
   closeModal,
   settlementData,
 }: IViewSettlementModal) {
+  const { userStore } = store;
   const settlementImage = {
     [SettlementType.village]: "assets/settlement_village.png",
     [SettlementType.town]: "assets/settlement_town.png",
     [SettlementType.city]: "assets/settlement_city.png",
   };
-
-  const { data, isPending } = useQuery({
-    queryKey: ["settlementId", settlementData?.id],
-    queryFn: () =>
-      settlementData ? getSettlementById(settlementData.id) : undefined,
-    enabled: !!settlementData,
-    refetchOnWindowFocus: "always",
-  });
 
   if (!settlementData) return null;
   return (
@@ -96,25 +90,12 @@ export default function ViewSettlementModal({
           </div>
         </div>
 
-        <div className={"flex flex-col items-center"}>
-          <p className={"text-xl"}>Garnizon</p>
-          <p>
-            Rycerze:{" "}
-            {isPending ? (
-              <div className="w-48 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700" />
-            ) : (
-              data?.data.knights
-            )}
-          </p>
-          <p>
-            Łucznicy:{" "}
-            {isPending ? (
-              <div className="w-48 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700" />
-            ) : (
-              data?.data.archers
-            )}
-          </p>
-        </div>
+        {userStore.user.id === settlementData.user.id ? (
+          <>
+            <Garrison settlementData={settlementData} />
+            <Recruitments settlementData={settlementData} />
+          </>
+        ) : null}
       </IonContent>
     </IonModal>
   );
