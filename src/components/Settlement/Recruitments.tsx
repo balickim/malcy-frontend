@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 
-import { IRecruitDto, ISettlementDto } from "~/api/settlements/dtos";
+import { IRequestRecruitmentDto, ISettlementDto } from "~/api/settlements/dtos";
 import {
   getAllRecruitmentsBySettlementId,
   startRecruitment,
@@ -14,7 +14,7 @@ interface IRecruitments {
 
 export function Recruitments({ settlementData }: IRecruitments) {
   const mutation = useMutation({
-    mutationFn: (data: IRecruitDto) => startRecruitment(data),
+    mutationFn: (data: IRequestRecruitmentDto) => startRecruitment(data),
   });
   const { data: currentRecruitments, refetch } = useQuery({
     queryKey: ["currentRecruitments", settlementData.id],
@@ -22,18 +22,21 @@ export function Recruitments({ settlementData }: IRecruitments) {
   });
   const [unitCount, setUnitCount] = useState(10);
 
-  const start = async (data: IRecruitDto) => {
+  const start = async (data: IRequestRecruitmentDto) => {
     await mutation.mutateAsync(data);
     return refetch();
   };
 
-  // const cancelRecruitment = async () => {};
-
+  console.log(currentRecruitments);
   return (
     <>
       {currentRecruitments &&
         currentRecruitments?.data.map((recruitment) => (
-          <Recruitment key={recruitment.id} recruitment={recruitment} />
+          <Recruitment
+            key={recruitment.id}
+            recruitmentJob={recruitment}
+            refetchRecruitments={refetch}
+          />
         ))}
       <div>
         <input

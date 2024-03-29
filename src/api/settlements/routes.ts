@@ -1,8 +1,9 @@
 import { fetchWrapper } from "~/api/fetch";
 import {
-  IRecruitDto,
+  IRequestRecruitmentDto,
   ISettlementDetailsDto,
   ISettlementDto,
+  IResponseRecruitmentDto,
 } from "~/api/settlements/dtos";
 import { IApiResponse, IJob } from "~/types/common";
 import { IBounds } from "~/types/settlement";
@@ -24,7 +25,7 @@ export const getSettlementById = async (
 };
 
 export const startRecruitment = async (
-  body: IRecruitDto,
+  body: IRequestRecruitmentDto,
 ): Promise<IApiResponse<ISettlementDetailsDto>> => {
   return fetchWrapper(`${import.meta.env.VITE_API_URL}/recruit`, {
     body: JSON.stringify(body),
@@ -34,6 +35,16 @@ export const startRecruitment = async (
 
 export const getAllRecruitmentsBySettlementId = async (
   id: string,
-): Promise<IApiResponse<IJob<IRecruitDto>[]>> => {
+): Promise<IApiResponse<IJob<IResponseRecruitmentDto>[]>> => {
   return fetchWrapper(`${import.meta.env.VITE_API_URL}/recruit/${id}`);
+};
+
+export const cancelRecruitment = async (
+  settlementId: string,
+  jobId: number,
+): Promise<IApiResponse<IJob<IResponseRecruitmentDto>[]>> => {
+  return fetchWrapper(
+    `${import.meta.env.VITE_API_URL}/recruit/${settlementId}/${jobId}`,
+    { method: "DELETE" },
+  );
 };
