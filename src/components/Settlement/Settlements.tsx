@@ -76,7 +76,7 @@ export default function Settlements({ bounds }: ISettlements) {
 
   return (
     <>
-      <MarkerClusterGroup chunkedLoading>
+      <MarkerClusterGroup chunkedLoading disableClusteringAtZoom={18}>
         {settlements.map((settlement) => (
           <Marker
             key={settlement.id}

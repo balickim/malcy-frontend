@@ -1,7 +1,7 @@
 import L from "leaflet";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { Marker } from "react-leaflet";
+import { Circle, Marker } from "react-leaflet";
 
 import { socket } from "~/api/socket";
 
@@ -38,5 +38,10 @@ export function UserLocationMarker({
     };
   }, [location]);
 
-  return position ? <Marker position={position} icon={walkingManIcon} /> : null;
+  return position ? (
+    <>
+      <Marker position={position} icon={walkingManIcon} />
+      <Circle center={position} radius={30} />
+    </>
+  ) : null;
 }

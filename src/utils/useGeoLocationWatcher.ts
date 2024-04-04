@@ -24,8 +24,10 @@ export function useGeoLocationWatcher({
       watchId = navigator.geolocation.watchPosition(
         (position) => {
           socket.emit("position", {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
+            location: {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            },
             userId: userStore.user.id,
           });
 

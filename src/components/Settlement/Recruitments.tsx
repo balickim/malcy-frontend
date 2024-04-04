@@ -19,6 +19,7 @@ export function Recruitments({ settlementData }: IRecruitments) {
   const { data: currentRecruitments, refetch } = useQuery({
     queryKey: ["currentRecruitments", settlementData.id],
     queryFn: () => getAllRecruitmentsBySettlementId(settlementData.id),
+    refetchInterval: 5000,
   });
   const [unitCount, setUnitCount] = useState(10);
 
@@ -27,7 +28,6 @@ export function Recruitments({ settlementData }: IRecruitments) {
     return refetch();
   };
 
-  console.log(currentRecruitments);
   return (
     <>
       {currentRecruitments &&
