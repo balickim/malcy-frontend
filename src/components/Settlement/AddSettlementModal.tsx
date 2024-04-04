@@ -19,7 +19,7 @@ interface IAddSettlementModal {
 }
 
 export default function AddSettlementModal({ modalRef }: IAddSettlementModal) {
-  const [values, setValues] = useState({ name: "", lat: "", lng: "" });
+  const [values, setValues] = useState({ name: "" });
 
   async function confirm() {
     await fetchWrapper(`${import.meta.env.VITE_API_URL}/settlements`, {
@@ -54,38 +54,9 @@ export default function AddSettlementModal({ modalRef }: IAddSettlementModal) {
               label="Name"
               value={values.name}
               onIonChange={(event) =>
-                // @ts-expect-error blah blah blah
                 setValues((prevState) => ({
                   ...prevState,
                   name: event.detail.value,
-                }))
-              }
-            />
-          </IonItem>
-
-          <IonItem>
-            <IonInput
-              label="Lat"
-              value={values.lat}
-              onIonChange={(event) =>
-                // @ts-expect-error blah blah blah
-                setValues((prevState) => ({
-                  ...prevState,
-                  lat: event.detail.value,
-                }))
-              }
-            />
-          </IonItem>
-
-          <IonItem>
-            <IonInput
-              label="Lng"
-              value={values.lng}
-              onIonChange={(event) =>
-                // @ts-expect-error blah blah blah
-                setValues((prevState) => ({
-                  ...prevState,
-                  lng: event.detail.value,
                 }))
               }
             />
