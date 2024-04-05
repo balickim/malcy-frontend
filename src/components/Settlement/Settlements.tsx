@@ -24,6 +24,7 @@ export default function Settlements({ bounds }: ISettlements) {
   const { data, isSuccess } = useQuery({
     queryKey: ["settlementBounds", bounds],
     queryFn: () => (bounds ? getSettlements(bounds) : undefined),
+    enabled: !!bounds,
   });
 
   useEffect(() => {

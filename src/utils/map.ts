@@ -1,7 +1,7 @@
 import L from "leaflet";
 import { RefObject } from "react";
 
-import { IGeoLocation } from "~/utils/useGeoLocationWatcher";
+import { IGeoLocation } from "~/utils/usePlayerLocationWatcher";
 
 export const centerMapOnPlayer = (
   mapRef: RefObject<L.Map>,

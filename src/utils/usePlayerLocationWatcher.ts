@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
 import { socket } from "~/api/socket";
@@ -9,32 +9,24 @@ export interface IGeoLocation {
   lng: number;
 }
 
-interface IUseGeoLocationWatcherProps {
-  setPlayerLocation: (location: IGeoLocation) => void;
-}
-
-export function useGeoLocationWatcher({
-  setPlayerLocation,
-}: IUseGeoLocationWatcherProps): void {
+export function usePlayerLocationWatcher() {
   const { userStore } = store;
+  const [playerLocation, setPlayerLocation] = useState<IGeoLocation | null>(
+    null,
+  );
+
   useEffect(() => {
     let watchId: number | null = null;
 
     if ("geolocation" in navigator) {
       watchId = navigator.geolocation.watchPosition(
         (position) => {
-          socket.emit("position", {
-            location: {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            },
-            userId: userStore.user.id,
-          });
-
-          setPlayerLocation({
+          const location = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
-          });
+          };
+          socket.emit("position", { location, userId: userStore.user.id });
+          setPlayerLocation(location);
         },
         (error) => {
           switch (error.code) {
@@ -51,6 +43,7 @@ export function useGeoLocationWatcher({
               toast.error("An unknown error occurred");
               break;
           }
+          setPlayerLocation(null); // Consider updating state on error if it aligns with your UX
         },
         {
           enableHighAccuracy: true,
@@ -65,5 +58,7 @@ export function useGeoLocationWatcher({
         }
       };
     }
-  }, [setPlayerLocation]);
+  }, []);
+
+  return playerLocation;
 }

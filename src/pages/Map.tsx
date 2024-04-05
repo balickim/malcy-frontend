@@ -14,10 +14,7 @@ import AddSettlementModal from "~/components/Settlement/AddSettlementModal";
 import Settlements from "~/components/Settlement/Settlements";
 import { IBounds } from "~/types/settlement";
 import { centerMapOnPlayer } from "~/utils/map";
-import {
-  IGeoLocation,
-  useGeoLocationWatcher,
-} from "~/utils/useGeoLocationWatcher";
+import { usePlayerLocationWatcher } from "~/utils/usePlayerLocationWatcher";
 
 const Map = () => {
   const mapRef = useRef<L.Map>(null);
@@ -25,9 +22,7 @@ const Map = () => {
     [53.391874, 14.424565], // south, west point
     [53.516425, 14.653759], // north, east point
   ];
-
-  const [playerLocation, setPlayerLocation] = useState<IGeoLocation>();
-  useGeoLocationWatcher({ setPlayerLocation });
+  const playerLocation = usePlayerLocationWatcher();
 
   const [bounds, setBounds] = useState<IBounds>();
   const modalAddSettlementRef = useRef<HTMLIonModalElement>(null);

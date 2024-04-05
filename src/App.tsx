@@ -49,7 +49,7 @@ const App = () => {
         </QueryClientProvider>
       </ErrorBoundary>
 
-      <Toaster position={"top-right"} />
+      <Toaster position={"top-right"} containerStyle={{ zIndex: 30_000 }} />
       <AppVersion />
     </IonApp>
   );
