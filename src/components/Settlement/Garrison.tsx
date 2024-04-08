@@ -21,7 +21,7 @@ export function Garrison({ settlementData }: IGarrison) {
       <p>
         Rycerze:{" "}
         {isPending ? (
-          <div className="w-48 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700" />
+          <p className="w-48 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700" />
         ) : (
           data?.data.knights
         )}
@@ -29,7 +29,7 @@ export function Garrison({ settlementData }: IGarrison) {
       <p>
         Łucznicy:{" "}
         {isPending ? (
-          <div className="w-48 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700" />
+          <p className="w-48 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700" />
         ) : (
           data?.data.archers
         )}

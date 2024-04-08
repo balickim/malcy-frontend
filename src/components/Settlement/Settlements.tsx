@@ -7,6 +7,7 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import { ISettlementDto, SettlementType } from "~/api/settlements/dtos";
 import { getSettlements } from "~/api/settlements/routes";
 import { socket } from "~/api/socket";
+import ContextMenu from "~/components/ContextMenu";
 import ViewSettlementModal from "~/components/Settlement/ViewSettlementModal";
 import store from "~/store";
 import { IBounds } from "~/types/settlement";
@@ -17,10 +18,16 @@ interface ISettlements {
 
 export default function Settlements({ bounds }: ISettlements) {
   const { userStore } = store;
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSettlementModalOpen, setIsSettlementModalOpen] = useState(false);
+  const [contextMenuData, setContextMenuData] = useState<{
+    position: {
+      x: number;
+      y: number;
+    } | null;
+    settlement: ISettlementDto;
+  } | null>(null);
+
   const [settlements, setSettlements] = useState<ISettlementDto[]>([]);
-  const [selectedSettlementData, setSelectedSettlementData] =
-    useState<ISettlementDto>();
   const { data, isSuccess } = useQuery({
     queryKey: ["settlementBounds", bounds],
     queryFn: () => (bounds ? getSettlements(bounds) : undefined),
@@ -66,13 +73,19 @@ export default function Settlements({ bounds }: ISettlements) {
 
     return L.icon({
       iconUrl: baseIconUrl + ".png",
-      iconSize: [35, 35],
+      iconSize: [30, 30],
     });
   };
 
   const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedSettlementData(undefined);
+    setIsSettlementModalOpen(false);
+  };
+
+  const handleMarkerClick = (
+    settlement: ISettlementDto,
+    event: L.LeafletMouseEvent,
+  ) => {
+    setContextMenuData({ settlement, position: event.containerPoint });
   };
 
   return (
@@ -87,20 +100,41 @@ export default function Settlements({ bounds }: ISettlements) {
               settlement.user.id === userStore.user.id,
             )}
             eventHandlers={{
-              click: () => {
-                setIsModalOpen(true);
-                setSelectedSettlementData(settlement);
-              },
+              click: (event) => handleMarkerClick(settlement, event),
             }}
           />
         ))}
       </MarkerClusterGroup>
 
       <ViewSettlementModal
-        isOpen={isModalOpen}
+        isOpen={isSettlementModalOpen}
         closeModal={closeModal}
-        settlementData={selectedSettlementData}
+        settlementData={contextMenuData?.settlement}
       />
+      {contextMenuData && contextMenuData.position ? (
+        <ContextMenu
+          setPosition={(position) =>
+            setContextMenuData({ ...contextMenuData, position })
+          }
+          position={contextMenuData.position}
+          items={[
+            {
+              icon: "assets/modal_info.png",
+              onClick: () => {
+                setIsSettlementModalOpen(true);
+              },
+            },
+            {
+              icon: "assets/malcy_leap_off_hand.png",
+              onClick: () => console.log("Clicked item 1"),
+            },
+            {
+              icon: "assets/malcy_take_up.webp",
+              onClick: () => console.log("Clicked item 1"),
+            },
+          ]}
+        />
+      ) : null}
     </>
   );
 }
