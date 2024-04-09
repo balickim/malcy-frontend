@@ -37,3 +37,15 @@ export interface IResponseRecruitmentDto {
   unitType: "knights" | "archers";
   finishesOn: Date;
 }
+
+export interface IRequestPickUpArmyDto {
+  settlementId?: string;
+  knights: number;
+  archers: number;
+}
+
+export interface IRequestPutDownArmyDto {
+  settlementId?: string;
+  knights: number;
+  archers: number;
+}

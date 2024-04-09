@@ -55,7 +55,6 @@ export function Recruitments({ settlementData }: IRecruitments) {
         >
           Start Recruitment
         </button>
-        {/*<button onClick={cancelRecruitment}>Cancel Recruitment</button>*/}
       </div>
     </>
   );

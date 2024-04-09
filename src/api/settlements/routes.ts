@@ -4,6 +4,8 @@ import {
   ISettlementDetailsDto,
   ISettlementDto,
   IResponseRecruitmentDto,
+  IRequestPickUpArmyDto,
+  IRequestPutDownArmyDto,
 } from "~/api/settlements/dtos";
 import { IApiResponse, IJob } from "~/types/common";
 import { IBounds } from "~/types/settlement";
@@ -46,5 +48,29 @@ export const cancelRecruitment = async (
   return fetchWrapper(
     `${import.meta.env.VITE_API_URL}/recruit/${settlementId}/${jobId}`,
     { method: "DELETE" },
+  );
+};
+
+export const pickUpArmy = async (
+  body: IRequestPickUpArmyDto,
+): Promise<IApiResponse<ISettlementDetailsDto>> => {
+  return fetchWrapper(
+    `${import.meta.env.VITE_API_URL}/settlements/pick-up-army`,
+    {
+      body: JSON.stringify(body),
+      method: "POST",
+    },
+  );
+};
+
+export const putDownArmy = async (
+  body: IRequestPutDownArmyDto,
+): Promise<IApiResponse<ISettlementDetailsDto>> => {
+  return fetchWrapper(
+    `${import.meta.env.VITE_API_URL}/settlements/put-down-army`,
+    {
+      body: JSON.stringify(body),
+      method: "POST",
+    },
   );
 };

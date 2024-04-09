@@ -8,6 +8,8 @@ import { ISettlementDto, SettlementType } from "~/api/settlements/dtos";
 import { getSettlements } from "~/api/settlements/routes";
 import { socket } from "~/api/socket";
 import ContextMenu from "~/components/ContextMenu";
+import PickUpArmyModal from "~/components/Settlement/PickUpArmyModal";
+import PutDownArmyModal from "~/components/Settlement/PutDownArmyModal";
 import ViewSettlementModal from "~/components/Settlement/ViewSettlementModal";
 import store from "~/store";
 import { IBounds } from "~/types/settlement";
@@ -19,6 +21,8 @@ interface ISettlements {
 export default function Settlements({ bounds }: ISettlements) {
   const { userStore } = store;
   const [isSettlementModalOpen, setIsSettlementModalOpen] = useState(false);
+  const [isPickUpArmyModalOpen, setIsPickUpArmyModalOpen] = useState(false);
+  const [isPutDownArmyModalOpen, setIsPutDownArmyModalOpen] = useState(false);
   const [contextMenuData, setContextMenuData] = useState<{
     position: {
       x: number;
@@ -81,6 +85,14 @@ export default function Settlements({ bounds }: ISettlements) {
     setIsSettlementModalOpen(false);
   };
 
+  const closePickUpArmyModal = () => {
+    setIsPickUpArmyModalOpen(false);
+  };
+
+  const closePutDownArmyModal = () => {
+    setIsPutDownArmyModalOpen(false);
+  };
+
   const handleMarkerClick = (
     settlement: ISettlementDto,
     event: L.LeafletMouseEvent,
@@ -111,6 +123,17 @@ export default function Settlements({ bounds }: ISettlements) {
         closeModal={closeModal}
         settlementData={contextMenuData?.settlement}
       />
+      <PickUpArmyModal
+        isOpen={isPickUpArmyModalOpen}
+        closeModal={closePickUpArmyModal}
+        settlementId={contextMenuData?.settlement.id}
+      />
+      <PutDownArmyModal
+        isOpen={isPutDownArmyModalOpen}
+        closeModal={closePutDownArmyModal}
+        settlementId={contextMenuData?.settlement.id}
+      />
+
       {contextMenuData && contextMenuData.position ? (
         <ContextMenu
           setPosition={(position) =>
@@ -120,17 +143,15 @@ export default function Settlements({ bounds }: ISettlements) {
           items={[
             {
               icon: "assets/modal_info.png",
-              onClick: () => {
-                setIsSettlementModalOpen(true);
-              },
+              onClick: () => setIsSettlementModalOpen(true),
             },
             {
               icon: "assets/malcy_leap_off_hand.png",
-              onClick: () => console.log("Clicked item 1"),
+              onClick: () => setIsPutDownArmyModalOpen(true),
             },
             {
               icon: "assets/malcy_take_up.webp",
-              onClick: () => console.log("Clicked item 1"),
+              onClick: () => setIsPickUpArmyModalOpen(true),
             },
           ]}
         />
