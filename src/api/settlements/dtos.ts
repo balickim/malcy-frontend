@@ -25,19 +25,6 @@ export interface ISettlementDetailsDto {
   archers: number;
 }
 
-export interface IRequestRecruitmentDto {
-  settlementId: string;
-  unitCount: number;
-  unitType: "knights" | "archers";
-}
-
-export interface IResponseRecruitmentDto {
-  settlementId: string;
-  unitCount: number;
-  unitType: "knights" | "archers";
-  finishesOn: Date;
-}
-
 export interface IRequestPickUpArmyDto {
   settlementId?: string;
   knights: number;

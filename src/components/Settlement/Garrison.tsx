@@ -1,17 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 
+import SettlementsApi from "~/api/settlements";
 import { ISettlementDto } from "~/api/settlements/dtos";
-import { getSettlementById } from "~/api/settlements/routes";
 
 interface IGarrison {
   settlementData: ISettlementDto;
 }
 
 export function Garrison({ settlementData }: IGarrison) {
+  const settlementsApi = new SettlementsApi();
   const { data, isPending } = useQuery({
     queryKey: ["settlementId", settlementData.id],
-    queryFn: () => getSettlementById(settlementData.id),
+    queryFn: () => settlementsApi.getSettlementById(settlementData.id),
     refetchOnWindowFocus: "always",
   });
 

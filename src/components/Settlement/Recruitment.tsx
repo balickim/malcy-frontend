@@ -4,8 +4,8 @@ import { trashOutline } from "ionicons/icons";
 import React from "react";
 import { toast } from "react-hot-toast";
 
-import { IResponseRecruitmentDto } from "~/api/settlements/dtos";
-import { cancelRecruitment } from "~/api/settlements/routes";
+import RecruitmentsApi from "~/api/recruitments";
+import { IResponseRecruitmentDto } from "~/api/recruitments/dtos";
 import { IJob } from "~/types/common";
 
 interface IRecruitment {
@@ -17,9 +17,14 @@ export function Recruitment({
   recruitmentJob,
   refetchRecruitments,
 }: IRecruitment) {
+  const recruitmentsApi = new RecruitmentsApi();
+
   const { mutateAsync } = useMutation({
     mutationFn: () =>
-      cancelRecruitment(recruitmentJob.data.settlementId, recruitmentJob.id),
+      recruitmentsApi.cancelRecruitment(
+        recruitmentJob.data.settlementId,
+        recruitmentJob.id,
+      ),
   });
   const recruitedUnits = recruitmentJob.progress;
   const totalUnits = recruitmentJob.data.unitCount;

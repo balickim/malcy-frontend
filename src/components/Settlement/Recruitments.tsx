@@ -1,11 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 
-import { IRequestRecruitmentDto, ISettlementDto } from "~/api/settlements/dtos";
-import {
-  getAllRecruitmentsBySettlementId,
-  startRecruitment,
-} from "~/api/settlements/routes";
+import RecruitmentsApi from "~/api/recruitments";
+import { IRequestRecruitmentDto } from "~/api/recruitments/dtos";
+import { ISettlementDto } from "~/api/settlements/dtos";
 import { Recruitment } from "~/components/Settlement/Recruitment";
 
 interface IRecruitments {
@@ -13,12 +11,18 @@ interface IRecruitments {
 }
 
 export function Recruitments({ settlementData }: IRecruitments) {
+  const recruitmentsApi = new RecruitmentsApi();
+
   const mutation = useMutation({
-    mutationFn: (data: IRequestRecruitmentDto) => startRecruitment(data),
+    mutationFn: (data: IRequestRecruitmentDto) =>
+      recruitmentsApi.startRecruitment(data),
   });
   const { data: currentRecruitments, refetch } = useQuery({
     queryKey: ["currentRecruitments", settlementData.id],
-    queryFn: () => getAllRecruitmentsBySettlementId(settlementData.id),
+    queryFn: () =>
+      recruitmentsApi.getUnfinishedRecruitmentsBySettlementId(
+        settlementData.id,
+      ),
     refetchInterval: 5000,
   });
   const [unitCount, setUnitCount] = useState(10);

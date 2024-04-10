@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import { Marker } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 
+import SettlementsApi from "~/api/settlements";
 import { ISettlementDto, SettlementType } from "~/api/settlements/dtos";
-import { getSettlements } from "~/api/settlements/routes";
 import { socket } from "~/api/socket";
 import ContextMenu from "~/components/ContextMenu";
 import PickUpArmyModal from "~/components/Settlement/PickUpArmyModal";
@@ -19,6 +19,7 @@ interface ISettlements {
 }
 
 export default function Settlements({ bounds }: ISettlements) {
+  const settlementsApi = new SettlementsApi();
   const { userStore } = store;
   const [isSettlementModalOpen, setIsSettlementModalOpen] = useState(false);
   const [isPickUpArmyModalOpen, setIsPickUpArmyModalOpen] = useState(false);
@@ -34,7 +35,7 @@ export default function Settlements({ bounds }: ISettlements) {
   const [settlements, setSettlements] = useState<ISettlementDto[]>([]);
   const { data, isSuccess } = useQuery({
     queryKey: ["settlementBounds", bounds],
-    queryFn: () => (bounds ? getSettlements(bounds) : undefined),
+    queryFn: () => (bounds ? settlementsApi.getSettlements(bounds) : undefined),
     enabled: !!bounds,
   });
 

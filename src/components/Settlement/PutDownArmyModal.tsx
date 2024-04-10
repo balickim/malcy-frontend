@@ -10,7 +10,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
 
-import { putDownArmy } from "~/api/settlements/routes";
+import SettlementsApi from "~/api/settlements";
 
 interface IViewSettlementModal {
   isOpen: boolean;
@@ -23,8 +23,9 @@ export default function PutDownArmyModal({
   closeModal,
   settlementId,
 }: IViewSettlementModal) {
+  const settlementsApi = new SettlementsApi();
   const putDownArmyMutation = useMutation({
-    mutationFn: putDownArmy,
+    mutationFn: settlementsApi.putDownArmy,
   });
   const [unitCount, setUnitCount] = useState(10);
 
