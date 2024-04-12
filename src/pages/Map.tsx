@@ -40,6 +40,7 @@ const Map = () => {
         ref={mapRef}
         id="map"
         center={[playerLocation.lat, playerLocation.lng]}
+        zoom={18}
         minZoom={13}
         maxZoom={18}
         style={{ height: "calc(100vh - 57px)", width: "100%" }}
