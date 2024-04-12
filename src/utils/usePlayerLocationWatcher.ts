@@ -43,7 +43,6 @@ export function usePlayerLocationWatcher() {
               toast.error("An unknown error occurred");
               break;
           }
-          setPlayerLocation(null); // Consider updating state on error if it aligns with your UX
         },
         {
           enableHighAccuracy: true,

@@ -17,49 +17,49 @@ import { centerMapOnPlayer } from "~/utils/map";
 import { usePlayerLocationWatcher } from "~/utils/usePlayerLocationWatcher";
 
 const Map = () => {
-  const mapRef = useRef<L.Map>(null);
-  const cityBounds: L.LatLngBoundsExpression = [
-    [53.391874, 14.424565], // south, west point
-    [53.516425, 14.653759], // north, east point
-  ];
   const playerLocation = usePlayerLocationWatcher();
-
+  const mapRef = useRef<L.Map>(null);
   const [bounds, setBounds] = useState<IBounds>();
   const modalAddSettlementRef = useRef<HTMLIonModalElement>(null);
+
+  if (!playerLocation) {
+    return (
+      <PageContainer>
+        <NoPlayerPositionInfo />
+      </PageContainer>
+    );
+  }
+
   return (
     <PageContainer>
-      {playerLocation ? (
-        <MapContainer
-          ref={mapRef}
-          id="map"
-          center={[playerLocation.lat, playerLocation.lng]}
-          zoom={18}
-          minZoom={13}
-          maxZoom={18}
-          style={{ height: "calc(100vh - 57px)", width: "100%" }}
-          maxBounds={cityBounds}
-          maxBoundsViscosity={1}
-        >
-          <UserLocationMarker location={playerLocation} />
-          <MapBoundsUpdater setBounds={setBounds} />
-          <Settlements bounds={bounds} />
-          <Buttons
-            centerMapOnPlayer={() => centerMapOnPlayer(mapRef, playerLocation)}
-          />
+      <MapContainer
+        ref={mapRef}
+        id="map"
+        center={[playerLocation.lat, playerLocation.lng]}
+        zoom={18}
+        style={{ height: "calc(100vh - 57px)", width: "100%" }}
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+        <UserLocationMarker location={playerLocation} />
+        <MapBoundsUpdater setBounds={setBounds} />
+        <Settlements bounds={bounds} />
+        <Buttons
+          centerMapOnPlayer={() => centerMapOnPlayer(mapRef, playerLocation)}
+        />
 
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
 
-          <AddSettlementModal modalRef={modalAddSettlementRef} />
+        <AddSettlementModal modalRef={modalAddSettlementRef} />
 
-          <InvalidateSize />
-          <LocationFinderDummy />
-        </MapContainer>
-      ) : (
-        <NoPlayerPositionInfo />
-      )}
+        <InvalidateSize />
+        <LocationFinderDummy />
+      </MapContainer>
     </PageContainer>
   );
 };
