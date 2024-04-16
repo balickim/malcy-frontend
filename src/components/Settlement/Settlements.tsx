@@ -5,9 +5,10 @@ import { Marker } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 
 import SettlementsApi from "~/api/settlements";
-import { ISettlementDto, SettlementType } from "~/api/settlements/dtos";
+import { ISettlementDto } from "~/api/settlements/dtos";
 import { socket } from "~/api/socket";
 import ContextMenu from "~/components/ContextMenu";
+import { CustomMarkerIcon } from "~/components/Settlement/CustomMarkerIcon";
 import PickUpArmyModal from "~/components/Settlement/PickUpArmyModal";
 import PutDownArmyModal from "~/components/Settlement/PutDownArmyModal";
 import ViewSettlementModal from "~/components/Settlement/ViewSettlementModal";
@@ -69,19 +70,6 @@ export default function Settlements({ bounds }: ISettlements) {
     };
   }, []);
 
-  const settlementIcon = (type: SettlementType, owned: boolean) => {
-    let baseIconUrl = "assets/settlement";
-    const typeString = `_${type}`;
-    const ownedString = `_owned`;
-    if (type) baseIconUrl = baseIconUrl + typeString;
-    if (owned) baseIconUrl = baseIconUrl + ownedString;
-
-    return L.icon({
-      iconUrl: baseIconUrl + ".png",
-      iconSize: [30, 30],
-    });
-  };
-
   const closeModal = () => {
     setIsSettlementModalOpen(false);
   };
@@ -108,10 +96,10 @@ export default function Settlements({ bounds }: ISettlements) {
           <Marker
             key={settlement.id}
             position={settlement}
-            icon={settlementIcon(
-              settlement.type,
-              settlement.user.id === userStore.user.id,
-            )}
+            icon={CustomMarkerIcon({
+              settlement,
+              userStore,
+            })}
             eventHandlers={{
               click: (event) => handleMarkerClick(settlement, event),
             }}

@@ -19,22 +19,22 @@ export function Garrison({ settlementData }: IGarrison) {
   return (
     <div className={"flex flex-col items-center"}>
       <p className={"text-xl"}>Garnizon</p>
-      <p>
+      <div>
         Rycerze:{" "}
         {isPending ? (
           <p className="w-48 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700" />
         ) : (
           data?.data.knights
         )}
-      </p>
-      <p>
+      </div>
+      <div>
         Łucznicy:{" "}
         {isPending ? (
           <p className="w-48 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700" />
         ) : (
           data?.data.archers
         )}
-      </p>
+      </div>
     </div>
   );
 }

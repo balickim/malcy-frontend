@@ -1,7 +1,8 @@
-export enum SettlementType {
-  village = "village",
-  town = "town",
-  city = "city",
+export enum SettlementTypes {
+  MINING_TOWN = "MINING_TOWN",
+  CASTLE_TOWN = "CASTLE_TOWN",
+  FORTIFIED_SETTLEMENT = "FORTIFIED_SETTLEMENT",
+  CAPITOL_SETTLEMENT = "CAPITOL_SETTLEMENT",
 }
 
 export interface ISettlementDto {
@@ -9,7 +10,7 @@ export interface ISettlementDto {
   lat: number;
   lng: number;
   name: string;
-  type: SettlementType;
+  type: SettlementTypes;
   user: {
     createdAt: string;
     deletedAt: string | null;

@@ -9,7 +9,7 @@ import {
 } from "@ionic/react";
 import React from "react";
 
-import { ISettlementDto, SettlementType } from "~/api/settlements/dtos";
+import { ISettlementDto, SettlementTypes } from "~/api/settlements/dtos";
 import { Garrison } from "~/components/Settlement/Garrison";
 import { Recruitments } from "~/components/Settlement/Recruitments";
 import store from "~/store";
@@ -27,9 +27,12 @@ export default function ViewSettlementModal({
 }: IViewSettlementModal) {
   const { userStore } = store;
   const settlementImage = {
-    [SettlementType.village]: "assets/settlement_village.png",
-    [SettlementType.town]: "assets/settlement_town.png",
-    [SettlementType.city]: "assets/settlement_city.png",
+    [SettlementTypes.MINING_TOWN]: "assets/settlements/types/mining_town.webp",
+    [SettlementTypes.CASTLE_TOWN]: "assets/settlements/types/castle_town.webp",
+    [SettlementTypes.FORTIFIED_SETTLEMENT]:
+      "assets/settlements/types/fortified_settlement.webp",
+    [SettlementTypes.CAPITOL_SETTLEMENT]:
+      "assets/settlements/types/capitol_settlement.webp",
   };
 
   if (!settlementData) return null;
@@ -68,7 +71,7 @@ export default function ViewSettlementModal({
                     <img
                       src={settlementImage[settlementData.type]}
                       alt={settlementData.type}
-                      className="max-h-40 mx-auto"
+                      className="max-h-40 mx-auto rounded-full"
                     />
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
