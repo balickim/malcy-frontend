@@ -23,12 +23,15 @@ export default class RecruitmentsApi {
     return fetchWrapper(`${this.basePath}/${id}`);
   };
 
-  cancelRecruitment = async (
-    settlementId: string,
-    jobId: number,
-  ): Promise<IApiResponse<string>> => {
-    return fetchWrapper(`${this.basePath}/${settlementId}/${jobId}`, {
-      method: "DELETE",
-    });
+  cancelRecruitment = async (params: {
+    settlementId: string;
+    jobId: number;
+  }): Promise<IApiResponse<string>> => {
+    return fetchWrapper(
+      `${this.basePath}/${params.settlementId}/${params.jobId}`,
+      {
+        method: "DELETE",
+      },
+    );
   };
 }

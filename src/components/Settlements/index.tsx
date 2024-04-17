@@ -8,10 +8,10 @@ import SettlementsApi from "~/api/settlements";
 import { ISettlementDto } from "~/api/settlements/dtos";
 import { socket } from "~/api/socket";
 import ContextMenu from "~/components/ContextMenu";
-import { CustomMarkerIcon } from "~/components/Settlement/CustomMarkerIcon";
-import PickUpArmyModal from "~/components/Settlement/PickUpArmyModal";
-import PutDownArmyModal from "~/components/Settlement/PutDownArmyModal";
-import ViewSettlementModal from "~/components/Settlement/ViewSettlementModal";
+import { CustomMarkerIcon } from "~/components/Settlements/CustomMarkerIcon";
+import PickUpArmyModal from "~/components/Settlements/Modals/PickUpArmyModal";
+import PutDownArmyModal from "~/components/Settlements/Modals/PutDownArmyModal";
+import ViewSettlementModal from "~/components/Settlements/Modals/ViewSettlementModal";
 import store from "~/store";
 import { IBounds } from "~/types/settlement";
 

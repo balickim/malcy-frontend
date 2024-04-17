@@ -5,8 +5,6 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { ISettlementDto } from "~/api/settlements/dtos";
 import { userStore as store } from "~/store/userStore";
 
-import "./settlements.css";
-
 interface ICustomMarkerProps {
   settlement: ISettlementDto;
   userStore: typeof store;

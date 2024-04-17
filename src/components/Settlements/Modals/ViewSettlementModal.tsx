@@ -10,8 +10,8 @@ import {
 import React from "react";
 
 import { ISettlementDto, SettlementTypes } from "~/api/settlements/dtos";
-import { Garrison } from "~/components/Settlement/Garrison";
-import { Recruitments } from "~/components/Settlement/Recruitments";
+import { Garrison } from "~/components/Settlements/Garrison";
+import { Recruitments } from "~/components/Settlements/Recruitments";
 import store from "~/store";
 
 interface IViewSettlementModal {

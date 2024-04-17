@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
 
 import SettlementsApi from "~/api/settlements";
+import { UnitType } from "~/types/army";
 
 interface IViewSettlementModal {
   isOpen: boolean;
@@ -18,22 +19,25 @@ interface IViewSettlementModal {
   settlementId?: string;
 }
 
-export default function PutDownArmyModal({
+export default function PickUpArmyModal({
   isOpen,
   closeModal,
   settlementId,
 }: IViewSettlementModal) {
   const settlementsApi = new SettlementsApi();
-  const putDownArmyMutation = useMutation({
-    mutationFn: settlementsApi.putDownArmy,
+  const pickUpArmyMutation = useMutation({
+    mutationFn: settlementsApi.pickUpArmy,
   });
   const [unitCount, setUnitCount] = useState(10);
 
   const handlePickUpArmy = async () => {
-    await putDownArmyMutation.mutateAsync({
-      knights: unitCount,
-      archers: 0,
+    await pickUpArmyMutation.mutateAsync({
       settlementId,
+      [UnitType.SWORDSMAN]: unitCount,
+      [UnitType.ARCHER]: 0,
+      [UnitType.KNIGHT]: 0,
+      [UnitType.LUCHADOR]: 0,
+      [UnitType.ARCHMAGE]: 0,
     });
   };
 
@@ -44,7 +48,7 @@ export default function PutDownArmyModal({
           <IonButtons slot="start">
             <IonButton onClick={() => closeModal()}>Cancel</IonButton>
           </IonButtons>
-          <IonTitle>Upuść żołnierzy</IonTitle>
+          <IonTitle>Podnieś żołnierzy</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
@@ -59,7 +63,7 @@ export default function PutDownArmyModal({
                     setUnitCount(e.target.value as unknown as number)
                   }
                 />
-                <button onClick={() => handlePickUpArmy()}>Upuść</button>
+                <button onClick={() => handlePickUpArmy()}>Podnieś</button>
               </div>
             </div>
           </div>
