@@ -15,6 +15,7 @@ export function Garrison({ settlementData }: IGarrison) {
     queryKey: ["settlementId", settlementData.id],
     queryFn: () => settlementsApi.getSettlementById(settlementData.id),
     refetchOnWindowFocus: "always",
+    refetchInterval: 5000,
   });
 
   return (
