@@ -1,12 +1,14 @@
+import { UnitTypeName } from "~/types/army";
+
 export interface IRequestRecruitmentDto {
   settlementId: string;
   unitCount: number;
-  unitType: "knights" | "archers";
+  unitType: UnitTypeName;
 }
 
 export interface IResponseRecruitmentDto {
   settlementId: string;
   unitCount: number;
-  unitType: "knights" | "archers";
+  unitType: UnitTypeName;
   finishesOn: Date;
 }

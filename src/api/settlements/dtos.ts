@@ -1,3 +1,5 @@
+import { UnitType } from "~/types/army";
+
 export enum SettlementTypes {
   MINING_TOWN = "MINING_TOWN",
   CASTLE_TOWN = "CASTLE_TOWN",
@@ -22,18 +24,27 @@ export interface ISettlementDto {
 }
 
 export interface ISettlementDetailsDto {
-  knights: number;
-  archers: number;
+  [UnitType.SWORDSMAN]: number;
+  [UnitType.ARCHER]: number;
+  [UnitType.KNIGHT]: number;
+  [UnitType.LUCHADOR]: number;
+  [UnitType.ARCHMAGE]: number;
 }
 
 export interface IRequestPickUpArmyDto {
   settlementId?: string;
-  knights: number;
-  archers: number;
+  [UnitType.SWORDSMAN]: number;
+  [UnitType.ARCHER]: number;
+  [UnitType.KNIGHT]: number;
+  [UnitType.LUCHADOR]: number;
+  [UnitType.ARCHMAGE]: number;
 }
 
 export interface IRequestPutDownArmyDto {
   settlementId?: string;
-  knights: number;
-  archers: number;
+  [UnitType.SWORDSMAN]: number;
+  [UnitType.ARCHER]: number;
+  [UnitType.KNIGHT]: number;
+  [UnitType.LUCHADOR]: number;
+  [UnitType.ARCHMAGE]: number;
 }
