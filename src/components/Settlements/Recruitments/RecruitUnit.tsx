@@ -1,5 +1,5 @@
-import { IonRange } from "@ionic/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { IonPopover, IonRange } from "@ionic/react";
+import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
 
 import RecruitmentsApi from "~/api/recruitments";
@@ -35,8 +35,20 @@ export const RecruitUnit: React.FC<IRecruitUnitProps> = ({
   };
 
   return (
-    <div className="flex items-center space-x-4">
-      <img src={unitImage} alt={unitType} className="h-16 w-16" />
+    <div className="flex items-center gap-2 mx-auto">
+      <IonPopover
+        trigger={`trigger-${unitType}`}
+        triggerAction="hover"
+        showBackdrop={false}
+      >
+        <img src={unitImage} alt={unitType} />
+      </IonPopover>
+      <img
+        id={`trigger-${unitType}`}
+        src={unitImage}
+        alt={unitType}
+        className="h-16 w-16"
+      />
       <IonRange
         min={0}
         max={100}
@@ -49,7 +61,7 @@ export const RecruitUnit: React.FC<IRecruitUnitProps> = ({
         type="number"
         value={unitCount}
         onChange={(e) => setUnitCount(parseInt(e.target.value))}
-        className="w-20 text-center"
+        className="w-10 text-center"
       />
       <button
         onClick={() =>

@@ -12,6 +12,7 @@ const userReset = (): IUser => {
     createdAt: new Date(),
     updatedAt: new Date(),
     deletedAt: null,
+    army: { swordsman: 0, archer: 0, knight: 0, luchador: 0, archmage: 0 },
   };
 };
 
@@ -31,7 +32,7 @@ class UserStore {
   logIn(userData: { access_token: string; user: IUser }) {
     setAccessToken(userData.access_token);
     this.isLoggedIn = true;
-    this.user = userData.user;
+    this.user = { ...userData.user, army: userReset().army };
   }
 
   logOut() {

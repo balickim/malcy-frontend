@@ -6,3 +6,7 @@ export const UnitType = {
   ARCHMAGE: "archmage",
 } as const;
 export type UnitTypeName = (typeof UnitType)[keyof typeof UnitType];
+
+export type TArmy = {
+  [unit in UnitTypeName]: number;
+};

@@ -1,4 +1,4 @@
-import { UnitType } from "~/types/army";
+import { TArmy, UnitType } from "~/types/army";
 
 export enum SettlementTypes {
   MINING_TOWN = "MINING_TOWN",
@@ -21,6 +21,7 @@ export interface ISettlementDto {
     nick: string;
     updatedAt: string;
   };
+  army?: TArmy;
 }
 
 export interface ISettlementDetailsDto {

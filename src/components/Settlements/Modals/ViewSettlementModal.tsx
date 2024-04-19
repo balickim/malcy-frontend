@@ -4,13 +4,14 @@ import {
   IonContent,
   IonHeader,
   IonModal,
+  IonPopover,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import React from "react";
 
 import { ISettlementDto, SettlementTypes } from "~/api/settlements/dtos";
-import { Garrison } from "~/components/Settlements/Garrison";
+import { Army } from "~/components/Settlements/Army";
 import { Recruitments } from "~/components/Settlements/Recruitments";
 import store from "~/store";
 
@@ -36,6 +37,7 @@ export default function ViewSettlementModal({
   };
 
   if (!settlementData) return null;
+  const isOwn = userStore.user.id === settlementData.user.id;
   return (
     <IonModal isOpen={isOpen} onWillDismiss={() => closeModal()}>
       <IonHeader>
@@ -47,6 +49,7 @@ export default function ViewSettlementModal({
         </IonToolbar>
       </IonHeader>
       <IonContent>
+        {isOwn ? <Army army={settlementData.army} /> : null}
         <div className="flex">
           <div className="inline-block w-full align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all">
             <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -68,7 +71,18 @@ export default function ViewSettlementModal({
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10">
+                    <IonPopover
+                      trigger={`trigger-${settlementData.type}`}
+                      triggerAction="hover"
+                      showBackdrop={false}
+                    >
+                      <img
+                        src={settlementImage[settlementData.type]}
+                        alt={settlementData.type}
+                      />
+                    </IonPopover>
                     <img
+                      id={`trigger-${settlementData.type}`}
                       src={settlementImage[settlementData.type]}
                       alt={settlementData.type}
                       className="max-h-40 mx-auto rounded-full"
@@ -93,12 +107,7 @@ export default function ViewSettlementModal({
           </div>
         </div>
 
-        {userStore.user.id === settlementData.user.id ? (
-          <>
-            <Garrison settlementData={settlementData} />
-            <Recruitments settlementData={settlementData} />
-          </>
-        ) : null}
+        {isOwn ? <Recruitments settlementData={settlementData} /> : null}
       </IonContent>
     </IonModal>
   );

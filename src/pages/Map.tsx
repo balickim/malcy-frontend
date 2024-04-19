@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
+import ArmyWrapper from "~/components/Map/ArmyWrapper";
 import Buttons from "~/components/Map/Buttons";
 import InvalidateSize from "~/components/Map/InvalidateSize";
 import { LocationFinderDummy } from "~/components/Map/LocationFinderDummy";
@@ -47,6 +48,7 @@ const Map = () => {
         maxBounds={cityBounds}
         maxBoundsViscosity={1}
       >
+        <ArmyWrapper />
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

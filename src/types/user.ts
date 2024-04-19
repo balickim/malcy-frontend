@@ -1,3 +1,5 @@
+import { TArmy } from "~/types/army";
+
 export interface IUser {
   createdAt: Date;
   deletedAt: Date | null;
@@ -5,4 +7,5 @@ export interface IUser {
   id: string;
   nick: string;
   updatedAt: Date;
+  army: TArmy;
 }
