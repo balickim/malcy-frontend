@@ -32,13 +32,17 @@ class UserStore {
   logIn(userData: { access_token: string; user: IUser }) {
     setAccessToken(userData.access_token);
     this.isLoggedIn = true;
-    this.user = { ...userData.user, army: userReset().army };
+    this.setUser({ ...userData.user, army: userReset().army });
   }
 
   logOut() {
     removeAccessToken();
     this.isLoggedIn = false;
     this.user = userReset();
+  }
+
+  setUser(user: IUser) {
+    this.user = user;
   }
 }
 

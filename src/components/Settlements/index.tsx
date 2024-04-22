@@ -9,8 +9,7 @@ import { ISettlementDto } from "~/api/settlements/dtos";
 import { socket } from "~/api/socket";
 import ContextMenu from "~/components/ContextMenu";
 import { CustomMarkerIcon } from "~/components/Settlements/CustomMarkerIcon";
-import PickUpArmyModal from "~/components/Settlements/Modals/PickUpArmyModal";
-import PutDownArmyModal from "~/components/Settlements/Modals/PutDownArmyModal";
+import PickUpOrPutDownArmyModal from "~/components/Settlements/Modals/PickUpOrPutDownArmyModal";
 import ViewSettlementModal from "~/components/Settlements/Modals/ViewSettlementModal";
 import store from "~/store";
 import { IBounds } from "~/types/settlement";
@@ -23,21 +22,26 @@ export default function Settlements({ bounds }: ISettlements) {
   const settlementsApi = new SettlementsApi();
   const { userStore } = store;
   const [isSettlementModalOpen, setIsSettlementModalOpen] = useState(false);
-  const [isPickUpArmyModalOpen, setIsPickUpArmyModalOpen] = useState(false);
-  const [isPutDownArmyModalOpen, setIsPutDownArmyModalOpen] = useState(false);
-  const [contextMenuData, setContextMenuData] = useState<{
-    position: {
-      x: number;
-      y: number;
-    } | null;
-    settlement: ISettlementDto;
-  } | null>(null);
+  const [openedModal, setOpenedModal] = useState<
+    "pick_up" | "put_down" | undefined
+  >(undefined);
+  const [contextMenuData, setContextMenuData] = useState<
+    | {
+        position: {
+          x: number;
+          y: number;
+        } | null;
+        settlement: ISettlementDto;
+      }
+    | undefined
+  >(undefined);
 
   const [settlements, setSettlements] = useState<ISettlementDto[]>([]);
   const { data, isSuccess } = useQuery({
     queryKey: ["settlementBounds", bounds],
     queryFn: () => (bounds ? settlementsApi.getSettlements(bounds) : undefined),
     enabled: !!bounds,
+    refetchInterval: 5000,
   });
 
   useEffect(() => {
@@ -70,16 +74,9 @@ export default function Settlements({ bounds }: ISettlements) {
     };
   }, []);
 
-  const closeModal = () => {
+  const closeModals = () => {
     setIsSettlementModalOpen(false);
-  };
-
-  const closePickUpArmyModal = () => {
-    setIsPickUpArmyModalOpen(false);
-  };
-
-  const closePutDownArmyModal = () => {
-    setIsPutDownArmyModalOpen(false);
+    setOpenedModal(undefined);
   };
 
   const handleMarkerClick = (
@@ -109,18 +106,14 @@ export default function Settlements({ bounds }: ISettlements) {
 
       <ViewSettlementModal
         isOpen={isSettlementModalOpen}
-        closeModal={closeModal}
+        closeModal={closeModals}
         settlementData={contextMenuData?.settlement}
       />
-      <PickUpArmyModal
-        isOpen={isPickUpArmyModalOpen}
-        closeModal={closePickUpArmyModal}
-        settlementId={contextMenuData?.settlement.id}
-      />
-      <PutDownArmyModal
-        isOpen={isPutDownArmyModalOpen}
-        closeModal={closePutDownArmyModal}
-        settlementId={contextMenuData?.settlement.id}
+      <PickUpOrPutDownArmyModal
+        type={openedModal}
+        isOpen={!!openedModal}
+        closeModal={closeModals}
+        settlementData={contextMenuData?.settlement as ISettlementDto}
       />
 
       {contextMenuData && contextMenuData.position ? (
@@ -136,11 +129,11 @@ export default function Settlements({ bounds }: ISettlements) {
             },
             {
               icon: "assets/malcy_leap_off_hand.png",
-              onClick: () => setIsPutDownArmyModalOpen(true),
+              onClick: () => setOpenedModal("put_down"),
             },
             {
               icon: "assets/malcy_take_up.webp",
-              onClick: () => setIsPickUpArmyModalOpen(true),
+              onClick: () => setOpenedModal("pick_up"),
             },
           ]}
         />

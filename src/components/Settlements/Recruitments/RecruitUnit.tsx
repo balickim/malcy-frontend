@@ -4,19 +4,18 @@ import React, { useState } from "react";
 
 import RecruitmentsApi from "~/api/recruitments";
 import { IRequestRecruitmentDto } from "~/api/recruitments/dtos";
-import { ISettlementDto } from "~/api/settlements/dtos";
 import { UnitType } from "~/types/army";
 
 interface IRecruitUnitProps {
   unitType: (typeof UnitType)[keyof typeof UnitType];
-  settlementData: ISettlementDto;
+  settlementId: string;
   unitImage: string;
   refetch: () => void;
 }
 
 export const RecruitUnit: React.FC<IRecruitUnitProps> = ({
   unitType,
-  settlementData,
+  settlementId,
   unitImage,
   refetch,
 }) => {
@@ -64,9 +63,7 @@ export const RecruitUnit: React.FC<IRecruitUnitProps> = ({
         className="w-10 text-center"
       />
       <button
-        onClick={() =>
-          start({ unitCount, unitType, settlementId: settlementData.id })
-        }
+        onClick={() => start({ unitCount, unitType, settlementId })}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         Zrekrutuj

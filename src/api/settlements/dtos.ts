@@ -21,7 +21,7 @@ export interface ISettlementDto {
     nick: string;
     updatedAt: string;
   };
-  army?: TArmy;
+  army: TArmy;
 }
 
 export interface ISettlementDetailsDto {

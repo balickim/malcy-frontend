@@ -11,7 +11,7 @@ import {
 import React from "react";
 
 import { ISettlementDto, SettlementTypes } from "~/api/settlements/dtos";
-import { Army } from "~/components/Settlements/Army";
+import { Army } from "~/components/Army";
 import { Recruitments } from "~/components/Settlements/Recruitments";
 import store from "~/store";
 

@@ -16,9 +16,16 @@ import AddSettlementModal from "~/components/Settlements/Modals/AddSettlementMod
 import { IBounds } from "~/types/settlement";
 import { centerMapOnPlayer } from "~/utils/map";
 import { usePlayerLocationWatcher } from "~/utils/usePlayerLocationWatcher";
+import { useServerConfig } from "~/utils/useServerConfig";
+import { useUser } from "~/utils/useUser";
 
 const Map = () => {
   const playerLocation = usePlayerLocationWatcher();
+  useUser({ refetchInterval: 5000 });
+  const serverConfig = useServerConfig({
+    refetchOnWindowFocus: false,
+  });
+
   const mapRef = useRef<L.Map>(null);
   const cityBounds: L.LatLngBoundsExpression = [
     [53.391874, 14.424565], // south, west point
@@ -27,7 +34,7 @@ const Map = () => {
   const [bounds, setBounds] = useState<IBounds>();
   const modalAddSettlementRef = useRef<HTMLIonModalElement>(null);
 
-  if (!playerLocation) {
+  if (!playerLocation || serverConfig.isFetching) {
     return (
       <PageContainer>
         <NoPlayerPositionInfo />

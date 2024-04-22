@@ -5,7 +5,8 @@ import RecruitmentsApi from "~/api/recruitments";
 import { ISettlementDto } from "~/api/settlements/dtos";
 import { CurrentRecruitments } from "~/components/Settlements/Recruitments/CurrentRecruitments";
 import { RecruitUnit } from "~/components/Settlements/Recruitments/RecruitUnit";
-import { UnitType, UnitTypeName } from "~/types/army";
+import store from "~/store";
+import { UnitTypeName } from "~/types/army";
 
 interface IRecruitments {
   settlementData: ISettlementDto;
@@ -13,6 +14,7 @@ interface IRecruitments {
 
 export function Recruitments({ settlementData }: IRecruitments) {
   const recruitmentsApi = new RecruitmentsApi();
+  const { serverConfigStore } = store;
   const { data: currentRecruitments, refetch } = useQuery({
     queryKey: ["currentRecruitments", settlementData.id],
     queryFn: () =>
@@ -21,6 +23,9 @@ export function Recruitments({ settlementData }: IRecruitments) {
       ),
     refetchInterval: 5000,
   });
+  const availableUnits = Object.keys(
+    serverConfigStore.config!.SETTLEMENT[settlementData.type].RECRUITMENT,
+  );
 
   return (
     <>
@@ -29,11 +34,11 @@ export function Recruitments({ settlementData }: IRecruitments) {
         refetchRecruitments={refetch}
       />
 
-      {Object.values(UnitType).map((unitType) => (
+      {availableUnits.map((unitType) => (
         <RecruitUnit
           key={unitType}
           unitType={unitType as UnitTypeName}
-          settlementData={settlementData}
+          settlementId={settlementData.id}
           unitImage={`/assets/units/${unitType.toLowerCase()}.webp`}
           refetch={refetch}
         />

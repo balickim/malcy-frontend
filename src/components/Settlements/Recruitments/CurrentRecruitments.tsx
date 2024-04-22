@@ -35,7 +35,14 @@ export function CurrentRecruitments({
   };
 
   if (!currentRecruitments) return null;
-  return currentRecruitments.data.map((recruitmentJob) => {
+
+  const currentRecruitmentsSorted = currentRecruitments?.data.sort((a, b) => {
+    return (
+      new Date(a.data.finishesOn).getTime() -
+      new Date(b.data.finishesOn).getTime()
+    );
+  });
+  return currentRecruitmentsSorted.map((recruitmentJob) => {
     const recruitedUnits = recruitmentJob.progress;
     const totalUnits = recruitmentJob.data.unitCount;
     const endTimeFormatted = new Date(
