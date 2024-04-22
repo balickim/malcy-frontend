@@ -21,7 +21,7 @@ import { useUser } from "~/utils/useUser";
 interface IViewSettlementModal {
   isOpen: boolean;
   closeModal: () => void;
-  settlementData: ISettlementDto;
+  settlementData?: ISettlementDto;
   type?: "pick_up" | "put_down";
 }
 
@@ -41,6 +41,7 @@ export default function PickUpOrPutDownArmyModal({
         : settlementsApi.putDownArmy,
   });
 
+  if (!settlementData) return null;
   return (
     <IonModal isOpen={isOpen} onWillDismiss={() => closeModal()}>
       <IonHeader>

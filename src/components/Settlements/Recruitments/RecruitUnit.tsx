@@ -53,7 +53,7 @@ export const RecruitUnit: React.FC<IRecruitUnitProps> = ({
         max={100}
         step={1}
         value={unitCount}
-        onIonChange={(e) => setUnitCount(e.detail.value as number)}
+        onIonInput={(e) => setUnitCount(e.detail.value as number)}
         className="flex-1"
       />
       <input

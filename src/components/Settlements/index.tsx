@@ -107,13 +107,17 @@ export default function Settlements({ bounds }: ISettlements) {
       <ViewSettlementModal
         isOpen={isSettlementModalOpen}
         closeModal={closeModals}
-        settlementData={contextMenuData?.settlement}
+        settlementData={settlements.find((value) => {
+          return value.id === contextMenuData?.settlement.id;
+        })}
       />
       <PickUpOrPutDownArmyModal
         type={openedModal}
         isOpen={!!openedModal}
         closeModal={closeModals}
-        settlementData={contextMenuData?.settlement as ISettlementDto}
+        settlementData={settlements.find((value) => {
+          return value.id === contextMenuData?.settlement.id;
+        })}
       />
 
       {contextMenuData && contextMenuData.position ? (
