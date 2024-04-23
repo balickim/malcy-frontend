@@ -80,6 +80,7 @@ export function CurrentRecruitments({
           <p className="text-gray-700 whitespace-nowrap">
             Czas zakończenia: {endTimeFormatted}
           </p>
+          {/*delay: {recruitmentJob.opts.delay / 1000 / 60}*/}
         </div>
         <IonButton
           onClick={() =>
@@ -87,7 +88,12 @@ export function CurrentRecruitments({
           }
           className="text-black"
         >
-          <IonIcon slot="icon-only" md={trashOutline} ios={trashOutline} />
+          <IonIcon
+            slot="icon-only"
+            className={"text-white"}
+            md={trashOutline}
+            ios={trashOutline}
+          />
         </IonButton>
       </div>
     );
