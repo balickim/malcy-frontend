@@ -2,14 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 
 import RecruitmentsApi from "~/api/recruitments";
-import { ISettlementDto } from "~/api/settlements/dtos";
+import { IPrivateSettlementDto } from "~/api/settlements/dtos";
 import { CurrentRecruitments } from "~/components/Settlements/Recruitments/CurrentRecruitments";
 import { RecruitUnit } from "~/components/Settlements/Recruitments/RecruitUnit";
 import store from "~/store";
 import { UnitTypeName } from "~/types/army";
 
 interface IRecruitments {
-  settlementData: ISettlementDto;
+  settlementData: IPrivateSettlementDto;
 }
 
 export function Recruitments({ settlementData }: IRecruitments) {

@@ -11,7 +11,7 @@ import { MapBoundsUpdater } from "~/components/Map/MapBoundsUpdater";
 import { NoPlayerPositionInfo } from "~/components/Map/NoPlayerPositionInfo";
 import { UserLocationMarker } from "~/components/Map/UserLocationMarker";
 import PageContainer from "~/components/PageContainer";
-import Index from "~/components/Settlements";
+import Settlements from "~/components/Settlements";
 import AddSettlementModal from "~/components/Settlements/Modals/AddSettlementModal";
 import { IBounds } from "~/types/settlement";
 import { centerMapOnPlayer } from "~/utils/map";
@@ -62,7 +62,7 @@ const Map = () => {
         />
         <UserLocationMarker location={playerLocation} />
         <MapBoundsUpdater setBounds={setBounds} />
-        <Index bounds={bounds} />
+        <Settlements bounds={bounds} />
         <Buttons
           centerMapOnPlayer={() => centerMapOnPlayer(mapRef, playerLocation)}
         />

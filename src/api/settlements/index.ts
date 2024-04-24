@@ -1,5 +1,6 @@
 import { fetchWrapper } from "~/api/fetch";
 import {
+  IPrivateSettlementDto,
   IRequestPickUpArmyDto,
   IRequestPutDownArmyDto,
   ISettlementDetailsDto,
@@ -21,7 +22,7 @@ export default class SettlementsApi {
 
   getSettlementById = async (
     id: string,
-  ): Promise<IApiResponse<ISettlementDetailsDto>> => {
+  ): Promise<IApiResponse<IPrivateSettlementDto>> => {
     return fetchWrapper(`${this.basePath}/${id}`);
   };
 

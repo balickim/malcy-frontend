@@ -77,6 +77,7 @@ export default function Settlements({ bounds }: ISettlements) {
   const closeModals = () => {
     setIsSettlementModalOpen(false);
     setOpenedModal(undefined);
+    setContextMenuData(undefined);
   };
 
   const handleMarkerClick = (
@@ -107,17 +108,13 @@ export default function Settlements({ bounds }: ISettlements) {
       <ViewSettlementModal
         isOpen={isSettlementModalOpen}
         closeModal={closeModals}
-        settlementData={settlements.find((value) => {
-          return value.id === contextMenuData?.settlement.id;
-        })}
+        settlementId={contextMenuData && contextMenuData.settlement.id}
       />
       <PickUpOrPutDownArmyModal
         type={openedModal}
         isOpen={!!openedModal}
         closeModal={closeModals}
-        settlementData={settlements.find((value) => {
-          return value.id === contextMenuData?.settlement.id;
-        })}
+        settlementId={contextMenuData && contextMenuData.settlement.id}
       />
 
       {contextMenuData && contextMenuData.position ? (

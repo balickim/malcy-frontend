@@ -8,9 +8,11 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 
-import { ISettlementDto, SettlementTypes } from "~/api/settlements/dtos";
+import SettlementsApi from "~/api/settlements";
+import { SettlementTypesEnum } from "~/api/settlements/dtos";
 import { Army } from "~/components/Army";
 import { Recruitments } from "~/components/Settlements/Recruitments";
 import store from "~/store";
@@ -18,23 +20,34 @@ import store from "~/store";
 interface IViewSettlementModal {
   isOpen: boolean;
   closeModal: () => void;
-  settlementData?: ISettlementDto;
+  settlementId?: string;
 }
 
 export default function ViewSettlementModal({
   isOpen,
   closeModal,
-  settlementData,
+  settlementId,
 }: IViewSettlementModal) {
   const { userStore } = store;
   const settlementImage = {
-    [SettlementTypes.MINING_TOWN]: "assets/settlements/types/mining_town.webp",
-    [SettlementTypes.CASTLE_TOWN]: "assets/settlements/types/castle_town.webp",
-    [SettlementTypes.FORTIFIED_SETTLEMENT]:
+    [SettlementTypesEnum.MINING_TOWN]:
+      "assets/settlements/types/mining_town.webp",
+    [SettlementTypesEnum.CASTLE_TOWN]:
+      "assets/settlements/types/castle_town.webp",
+    [SettlementTypesEnum.FORTIFIED_SETTLEMENT]:
       "assets/settlements/types/fortified_settlement.webp",
-    [SettlementTypes.CAPITOL_SETTLEMENT]:
+    [SettlementTypesEnum.CAPITOL_SETTLEMENT]:
       "assets/settlements/types/capitol_settlement.webp",
   };
+
+  const settlementsApi = new SettlementsApi();
+  const { data } = useQuery({
+    queryKey: ["getSettlementById", settlementId],
+    queryFn: () =>
+      settlementId ? settlementsApi.getSettlementById(settlementId) : undefined,
+    enabled: !!settlementId,
+  });
+  const settlementData = data?.data;
 
   if (!settlementData) return null;
   const isOwn = userStore.user.id === settlementData.user.id;
@@ -50,6 +63,7 @@ export default function ViewSettlementModal({
       </IonHeader>
       <IonContent>
         {isOwn ? <Army army={settlementData.army} /> : null}
+
         <div className="flex">
           <div className="inline-block w-full align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all">
             <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -58,13 +72,10 @@ export default function ViewSettlementModal({
                   User Profile
                 </h4>
                 <p className="text-sm text-gray-500">
-                  Nick: {settlementData.user.nick}
+                  username: {settlementData.user.username}
                 </p>
                 <p className="text-sm text-gray-500">
-                  Email: {settlementData.user.email}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Created At: {settlementData.user.createdAt}
+                  id: {settlementData.user.id}
                 </p>
               </div>
 

@@ -1,4 +1,4 @@
-import { SettlementTypes } from "~/api/settlements/dtos";
+import { SettlementTypesEnum } from "~/api/settlements/dtos";
 import { UnitType } from "~/types/army";
 
 export enum ResourceType {
@@ -45,9 +45,9 @@ export interface IGameConfigDto {
   DEFAULT_MAX_RADIUS_TO_TAKE_ACTION_METERS: number;
   DEFAULT_MAX_USER_SPEED_METERS_PER_SECOND: number;
   SETTLEMENT: {
-    [SettlementTypes.MINING_TOWN]: ISettlementConfig;
-    [SettlementTypes.CASTLE_TOWN]: ISettlementConfig;
-    [SettlementTypes.FORTIFIED_SETTLEMENT]: ISettlementConfig;
-    [SettlementTypes.CAPITOL_SETTLEMENT]: ISettlementConfig;
+    [SettlementTypesEnum.MINING_TOWN]: ISettlementConfig;
+    [SettlementTypesEnum.CASTLE_TOWN]: ISettlementConfig;
+    [SettlementTypesEnum.FORTIFIED_SETTLEMENT]: ISettlementConfig;
+    [SettlementTypesEnum.CAPITOL_SETTLEMENT]: ISettlementConfig;
   };
 }

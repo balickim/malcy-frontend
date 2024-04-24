@@ -7,12 +7,11 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Formik } from "formik";
 import React from "react";
 
 import SettlementsApi from "~/api/settlements";
-import { ISettlementDto } from "~/api/settlements/dtos";
 import { UnitSlider } from "~/components/Settlements/UnitSlider";
 import store from "~/store";
 import { UnitType } from "~/types/army";
@@ -21,14 +20,14 @@ import { useUser } from "~/utils/useUser";
 interface IViewSettlementModal {
   isOpen: boolean;
   closeModal: () => void;
-  settlementData?: ISettlementDto;
+  settlementId?: string;
   type?: "pick_up" | "put_down";
 }
 
 export default function PickUpOrPutDownArmyModal({
   isOpen,
   closeModal,
-  settlementData,
+  settlementId,
   type,
 }: IViewSettlementModal) {
   const settlementsApi = new SettlementsApi();
@@ -40,6 +39,14 @@ export default function PickUpOrPutDownArmyModal({
         ? settlementsApi.pickUpArmy
         : settlementsApi.putDownArmy,
   });
+
+  const { data } = useQuery({
+    queryKey: ["getSettlementById", settlementId],
+    queryFn: () =>
+      settlementId ? settlementsApi.getSettlementById(settlementId) : undefined,
+    enabled: !!settlementId,
+  });
+  const settlementData = data?.data;
 
   if (!settlementData) return null;
   return (
