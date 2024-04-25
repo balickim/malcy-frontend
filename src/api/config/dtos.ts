@@ -1,18 +1,18 @@
 import { SettlementTypesEnum } from "~/api/settlements/dtos";
 import { UnitType } from "~/types/army";
 
-export enum ResourceType {
-  wood = "wood",
+export enum ResourceTypeEnum {
   gold = "gold",
+  wood = "wood",
 }
 
-interface IResourceCosts {
-  [ResourceType.gold]?: number;
-  [ResourceType.wood]?: number;
+export interface IResources {
+  [ResourceTypeEnum.gold]: number;
+  [ResourceTypeEnum.wood]: number;
 }
 
 interface IUnitRecruitment {
-  COST: IResourceCosts;
+  COST: IResources;
   TIME_MS: number;
 }
 
@@ -24,21 +24,11 @@ interface IRecruitment {
   [UnitType.ARCHMAGE]?: IUnitRecruitment;
 }
 
-interface IResourcesCap {
-  [ResourceType.gold]: number;
-  [ResourceType.wood]: number;
-}
-
-interface IResourceGenerationBase {
-  [ResourceType.wood]: number;
-  [ResourceType.gold]: number;
-}
-
 interface ISettlementConfig {
   MAX: number | "infinite";
   RECRUITMENT: IRecruitment;
-  RESOURCES_CAP: IResourcesCap;
-  RESOURCE_GENERATION_BASE: IResourceGenerationBase;
+  RESOURCES_CAP: IResources;
+  RESOURCE_GENERATION_BASE: IResources;
 }
 
 export interface IGameConfigDto {

@@ -1,4 +1,4 @@
-import {IBounds} from "~/types/settlement";
+import { IBounds } from "~/types/settlement";
 
 export function convertBoundsToSearchParams(bounds: IBounds): URLSearchParams {
   const paramsObj: Record<string, string> = {

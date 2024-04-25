@@ -14,6 +14,7 @@ import React from "react";
 import SettlementsApi from "~/api/settlements";
 import { SettlementTypesEnum } from "~/api/settlements/dtos";
 import { Army } from "~/components/Army";
+import { Resources } from "~/components/Resources";
 import { Recruitments } from "~/components/Settlements/Recruitments";
 import store from "~/store";
 
@@ -28,7 +29,7 @@ export default function ViewSettlementModal({
   closeModal,
   settlementId,
 }: IViewSettlementModal) {
-  const { userStore } = store;
+  const { userStore, serverConfigStore } = store;
   const settlementImage = {
     [SettlementTypesEnum.MINING_TOWN]:
       "assets/settlements/types/mining_town.webp",
@@ -41,15 +42,18 @@ export default function ViewSettlementModal({
   };
 
   const settlementsApi = new SettlementsApi();
-  const { data } = useQuery({
+  const { data, refetch: refetchSettlement } = useQuery({
     queryKey: ["getSettlementById", settlementId],
     queryFn: () =>
       settlementId ? settlementsApi.getSettlementById(settlementId) : undefined,
     enabled: !!settlementId,
+    refetchInterval: 5000,
   });
   const settlementData = data?.data;
 
   if (!settlementData) return null;
+  const resourcesCap =
+    serverConfigStore.config?.SETTLEMENT[settlementData.type].RESOURCES_CAP;
   const isOwn = userStore.user.id === settlementData.user.id;
   return (
     <IonModal isOpen={isOpen} onWillDismiss={() => closeModal()}>
@@ -63,6 +67,14 @@ export default function ViewSettlementModal({
       </IonHeader>
       <IonContent>
         {isOwn ? <Army army={settlementData.army} /> : null}
+        {isOwn ? (
+          <Resources
+            gold={settlementData.gold}
+            goldMax={resourcesCap && resourcesCap.gold}
+            wood={settlementData.wood}
+            woodMax={resourcesCap && resourcesCap.wood}
+          />
+        ) : null}
 
         <div className="flex">
           <div className="inline-block w-full align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all">
@@ -118,7 +130,12 @@ export default function ViewSettlementModal({
           </div>
         </div>
 
-        {isOwn ? <Recruitments settlementData={settlementData} /> : null}
+        {isOwn ? (
+          <Recruitments
+            settlementData={settlementData}
+            refetchSettlement={refetchSettlement}
+          />
+        ) : null}
       </IonContent>
     </IonModal>
   );

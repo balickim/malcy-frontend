@@ -11,11 +11,13 @@ import { IApiResponse, IJob } from "~/types/common";
 interface IRecruitment {
   currentRecruitments?: IApiResponse<IJob<IResponseRecruitmentDto>[]>;
   refetchRecruitments: () => Promise<unknown>;
+  refetchSettlements: () => void;
 }
 
 export function CurrentRecruitments({
   currentRecruitments,
   refetchRecruitments,
+  refetchSettlements,
 }: IRecruitment) {
   const recruitmentsApi = new RecruitmentsApi();
 
@@ -30,6 +32,7 @@ export function CurrentRecruitments({
         if (res.statusCode === 200) {
           toast.success("Rekrutacja anulowana");
           refetchRecruitments();
+          refetchSettlements();
         }
       });
   };

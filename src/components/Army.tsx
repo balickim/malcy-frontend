@@ -8,6 +8,7 @@ interface IArmy {
 
 export function Army({ army }: IArmy) {
   if (!army) return null;
+
   return (
     <div className={"flex justify-end gap-2"}>
       {Object.values(UnitType).map((unitType) => (

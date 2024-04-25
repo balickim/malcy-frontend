@@ -9,6 +9,7 @@ import InvalidateSize from "~/components/Map/InvalidateSize";
 import { LocationFinderDummy } from "~/components/Map/LocationFinderDummy";
 import { MapBoundsUpdater } from "~/components/Map/MapBoundsUpdater";
 import { NoPlayerPositionInfo } from "~/components/Map/NoPlayerPositionInfo";
+import ResourcesWrapper from "~/components/Map/ResourcesWrapper";
 import { UserLocationMarker } from "~/components/Map/UserLocationMarker";
 import PageContainer from "~/components/PageContainer";
 import Settlements from "~/components/Settlements";
@@ -56,6 +57,7 @@ const Map = () => {
         maxBoundsViscosity={1}
       >
         <ArmyWrapper />
+        <ResourcesWrapper />
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

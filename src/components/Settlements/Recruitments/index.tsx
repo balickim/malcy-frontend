@@ -10,12 +10,16 @@ import { UnitTypeName } from "~/types/army";
 
 interface IRecruitments {
   settlementData: IPrivateSettlementDto;
+  refetchSettlement: () => void;
 }
 
-export function Recruitments({ settlementData }: IRecruitments) {
+export function Recruitments({
+  settlementData,
+  refetchSettlement,
+}: IRecruitments) {
   const recruitmentsApi = new RecruitmentsApi();
   const { serverConfigStore } = store;
-  const { data: currentRecruitments, refetch } = useQuery({
+  const { data: currentRecruitments, refetch: refetchRecruitments } = useQuery({
     queryKey: ["currentRecruitments", settlementData.id],
     queryFn: () =>
       recruitmentsApi.getUnfinishedRecruitmentsBySettlementId(
@@ -31,16 +35,18 @@ export function Recruitments({ settlementData }: IRecruitments) {
     <>
       <CurrentRecruitments
         currentRecruitments={currentRecruitments}
-        refetchRecruitments={refetch}
+        refetchRecruitments={refetchRecruitments}
+        refetchSettlements={refetchSettlement}
       />
 
       {availableUnits.map((unitType) => (
         <RecruitUnit
           key={unitType}
           unitType={unitType as UnitTypeName}
-          settlementId={settlementData.id}
+          settlementData={settlementData}
           unitImage={`/assets/units/${unitType.toLowerCase()}.webp`}
-          refetch={refetch}
+          refetchRecruitments={refetchRecruitments}
+          refetchSettlement={refetchSettlement}
         />
       ))}
     </>

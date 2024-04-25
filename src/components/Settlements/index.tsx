@@ -87,6 +87,8 @@ export default function Settlements({ bounds }: ISettlements) {
     setContextMenuData({ settlement, position: event.containerPoint });
   };
 
+  const isOwn =
+    contextMenuData && contextMenuData.settlement.user.id === userStore.user.id;
   return (
     <>
       <MarkerClusterGroup chunkedLoading disableClusteringAtZoom={18}>
@@ -128,14 +130,18 @@ export default function Settlements({ bounds }: ISettlements) {
               icon: "assets/modal_info.png",
               onClick: () => setIsSettlementModalOpen(true),
             },
-            {
-              icon: "assets/malcy_leap_off_hand.png",
-              onClick: () => setOpenedModal("put_down"),
-            },
-            {
-              icon: "assets/malcy_take_up.webp",
-              onClick: () => setOpenedModal("pick_up"),
-            },
+            ...(isOwn
+              ? [
+                  {
+                    icon: "assets/malcy_leap_off_hand.png",
+                    onClick: () => setOpenedModal("put_down"),
+                  },
+                  {
+                    icon: "assets/malcy_take_up.webp",
+                    onClick: () => setOpenedModal("pick_up"),
+                  },
+                ]
+              : []),
           ]}
         />
       ) : null}

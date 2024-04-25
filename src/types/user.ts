@@ -6,6 +6,8 @@ export interface IUser {
   email: string;
   id: string;
   nick: string;
+  wood?: number;
+  gold?: number;
   updatedAt: Date;
   army: TArmy;
 }
