@@ -11,3 +11,10 @@ export interface IUser {
   updatedAt: Date;
   army: TArmy;
 }
+
+export interface IJwtUser {
+  id: string;
+  username: string;
+  iat: number;
+  exp: number;
+}

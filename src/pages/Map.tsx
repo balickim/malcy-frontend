@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
+import ChatWrapper from "~/components/Chat/ChatWrapper";
 import ArmyWrapper from "~/components/Map/ArmyWrapper";
 import Buttons from "~/components/Map/Buttons";
 import InvalidateSize from "~/components/Map/InvalidateSize";
@@ -45,6 +46,8 @@ const Map = () => {
 
   return (
     <PageContainer>
+      <ChatWrapper />
+
       <MapContainer
         ref={mapRef}
         id="map"
