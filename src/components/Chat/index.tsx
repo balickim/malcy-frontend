@@ -38,12 +38,10 @@ const Chat = () => {
         const newMessages = Array.isArray(messagesInConversation?.data)
           ? messagesInConversation?.data
           : [messagesInConversation?.data].filter((x) => x);
-        const updatedMessages = new Map(
-          previous.map((m) => [m.conversationId, m]),
-        );
+        const updatedMessages = new Map(previous.map((m) => [m, m]));
 
         newMessages.forEach((nm) => {
-          updatedMessages.set(nm.conversationId, nm);
+          updatedMessages.set(nm, nm);
         });
 
         return Array.from(updatedMessages.values());
