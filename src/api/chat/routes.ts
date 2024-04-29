@@ -8,7 +8,7 @@ export default class ChatApi {
   getMessagesInConversation = async (
     conversationId: number,
     page: number,
-  ): Promise<IApiResponse<IChatMessageDto[]>> => {
+  ): Promise<IApiResponse<IChatMessageDto>> => {
     return fetchWrapper(`${this.basePath}/${conversationId}/${page}`);
   };
 }
