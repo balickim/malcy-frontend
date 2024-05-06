@@ -6,7 +6,7 @@ export default function ChatWrapper() {
   return (
     <div
       className={
-        "absolute h-1/3 mb-[57px] bottom-0 z-[30000] bg-gray-800 bg-opacity-40"
+        "absolute mb-[57px] bottom-0 z-[30000] bg-gray-800 bg-opacity-40"
       }
     >
       <Chat />

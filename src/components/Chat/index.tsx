@@ -5,7 +5,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 import { IMessageDto } from "~/api/chat/dtos";
 import ChatApi from "~/api/chat/routes";
-import { authedChatSocket } from "~/api/socket";
+import { useChatSocket } from "~/api/socket";
 import MessageInput from "~/components/Chat/MessageInput";
 import MessageList from "~/components/Chat/MessageList";
 import store from "~/store";
@@ -13,8 +13,8 @@ import store from "~/store";
 const Chat = () => {
   const { userStore } = store;
   const chatApi = new ChatApi();
+  const authedChatSocket = useChatSocket();
   const [conversationId] = useState(1);
-
   const [messages, setMessages] = useState<IMessageDto[]>([]);
 
   const {
@@ -22,6 +22,7 @@ const Chat = () => {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery({
+    refetchOnWindowFocus: false,
     initialPageParam: 1,
     queryKey: ["getMessagesInConversation", conversationId],
     queryFn: async ({ pageParam = 1 }) => {
@@ -48,14 +49,14 @@ const Chat = () => {
   }, [messagesInConversation]);
 
   useEffect(() => {
-    authedChatSocket.on("newMessage", (message: IMessageDto) => {
+    authedChatSocket?.on("newMessage", (message: IMessageDto) => {
       setMessages((prevMessages) => [message, ...prevMessages]);
     });
 
     return () => {
-      authedChatSocket.off("newMessage");
+      authedChatSocket?.off("newMessage");
     };
-  }, []);
+  }, [authedChatSocket]);
 
   const sendMessage = (content: string) => {
     const data = {
@@ -63,7 +64,9 @@ const Chat = () => {
       content,
       conversationId,
     };
-    authedChatSocket.emit("sendMessage", data);
+    console.log("data", data);
+    console.log("authedChatSocket", authedChatSocket);
+    authedChatSocket?.emit("sendMessage", data);
   };
 
   return (

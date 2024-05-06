@@ -84,43 +84,38 @@ export default observer(function MenuRouter() {
 
   return (
     <IonReactRouter>
-      <IonRouterOutlet id="main">
-        <>
-          <IonTabs>
-            <IonRouterOutlet>
-              {appPages.map((page) => (
-                <Route
-                  key={page.url}
-                  path={page.url}
-                  render={() => {
-                    if (!userStore.isLoggedIn && page.url !== "/auth")
-                      return <Redirect to="/auth" />;
-                    if (userStore.isLoggedIn && page.url === "/auth")
-                      return <Redirect to="/" />;
+      <IonTabs>
+        <IonRouterOutlet id="main">
+          {appPages.map((page) => (
+            <Route
+              key={page.url}
+              path={page.url}
+              render={() => {
+                if (!userStore.isLoggedIn && page.url !== "/auth")
+                  return <Redirect to="/auth" />;
+                if (userStore.isLoggedIn && page.url === "/auth")
+                  return <Redirect to="/" />;
 
-                    return <page.Component />;
-                  }}
-                  exact={true}
-                />
-              ))}
-            </IonRouterOutlet>
+                return <page.Component />;
+              }}
+              exact={true}
+            />
+          ))}
+        </IonRouterOutlet>
 
-            <IonTabBar slot="bottom">
-              {menuItems.map((page) => (
-                <IonTabButton
-                  key={page.url}
-                  tab={page.title.toLowerCase()}
-                  href={page.url}
-                >
-                  <IonIcon icon={page.iosIcon} />
-                  <IonLabel>{page.title}</IonLabel>
-                </IonTabButton>
-              ))}
-            </IonTabBar>
-          </IonTabs>
-        </>
-      </IonRouterOutlet>
-
+        <IonTabBar slot="bottom">
+          {menuItems.map((page) => (
+            <IonTabButton
+              key={page.url}
+              tab={page.title.toLowerCase()}
+              href={page.url}
+            >
+              <IonIcon icon={page.iosIcon} />
+              <IonLabel>{page.title}</IonLabel>
+            </IonTabButton>
+          ))}
+        </IonTabBar>
+      </IonTabs>
       <AuthRedirector />
     </IonReactRouter>
   );

@@ -6,7 +6,7 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 
 import SettlementsApi from "~/api/settlements";
 import { ISettlementDto } from "~/api/settlements/dtos";
-import { socket } from "~/api/socket";
+import { baseSocket } from "~/api/socket";
 import ContextMenu from "~/components/ContextMenu";
 import { CustomMarkerIcon } from "~/components/Settlements/CustomMarkerIcon";
 import PickUpOrPutDownArmyModal from "~/components/Settlements/Modals/PickUpOrPutDownArmyModal";
@@ -68,9 +68,9 @@ export default function Settlements({ bounds }: ISettlements) {
       });
     }
 
-    socket.on("newSettlement", newSettlement);
+    baseSocket.on("newSettlement", newSettlement);
     return () => {
-      socket.off("newSettlement", newSettlement);
+      baseSocket.off("newSettlement", newSettlement);
     };
   }, []);
 

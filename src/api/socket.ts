@@ -1,12 +1,27 @@
-import { io, ManagerOptions, SocketOptions } from "socket.io-client";
+import { useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
 
 import { getAccessToken } from "~/utils/cookies";
 
 const URL = import.meta.env.VITE_API_URL || "";
-const token = getAccessToken();
 
-export const socket = io(URL);
-const chatSocket = (options: Partial<ManagerOptions & SocketOptions>) =>
-  io(URL + "/chat", options);
+export const baseSocket = io(URL);
 
-export const authedChatSocket = chatSocket({ auth: { token } });
+export const useChatSocket = () => {
+  const [chatSocket, setChatSocket] = useState<Socket | null>(null);
+
+  useEffect(() => {
+    const token = getAccessToken();
+    const sc = io(URL + "/chat", {
+      auth: { token },
+    });
+
+    setChatSocket(sc);
+
+    return () => {
+      sc.disconnect();
+    };
+  }, []);
+
+  return chatSocket;
+};

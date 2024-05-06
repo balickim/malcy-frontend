@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
-import { socket } from "~/api/socket";
+import { baseSocket } from "~/api/socket";
 import store from "~/store";
 
 export interface IGeoLocation {
@@ -25,7 +25,7 @@ export function usePlayerLocationWatcher() {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
-          socket.emit("position", { location, userId: userStore.user.id });
+          baseSocket.emit("position", { location, userId: userStore.user.id });
           setPlayerLocation(location);
         },
         (error) => {
