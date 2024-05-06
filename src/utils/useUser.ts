@@ -1,4 +1,5 @@
 import { UndefinedInitialDataOptions, useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 import UsersApi from "~/api/users";
 import store from "~/store";
@@ -19,9 +20,11 @@ export function useUser(
     queryFn: () => usersApi.getMe(),
   });
 
-  if (getMe.isSuccess) {
-    userStore.setUser(getMe.data.data);
-  }
+  useEffect(() => {
+    if (getMe.isSuccess) {
+      userStore.setUser(getMe.data.data);
+    }
+  }, [getMe.isSuccess, getMe.data?.data]);
 
   return getMe;
 }
