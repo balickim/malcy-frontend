@@ -1,7 +1,7 @@
 import { useIonRouter } from "@ionic/react";
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 
-const AuthRedirector: React.FC = () => {
+const AuthRedirector: React.FC = memo(() => {
   const router = useIonRouter();
 
   useEffect(() => {
@@ -21,6 +21,7 @@ const AuthRedirector: React.FC = () => {
   }, [router]);
 
   return null;
-};
+});
+AuthRedirector.displayName = "AuthRedirector";
 
 export default AuthRedirector;
