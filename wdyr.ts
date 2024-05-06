@@ -11,5 +11,6 @@ if (import.meta.env.DEV) {
     exclude: [/^Ion/, /^Link/, /^Route/, /^Redirect/],
     trackHooks: true,
     trackAllPureComponents: true,
+    collapseGroups: true,
   });
 }

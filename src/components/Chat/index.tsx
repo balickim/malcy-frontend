@@ -13,7 +13,7 @@ import store from "~/store";
 const Chat = () => {
   const { userStore } = store;
   const chatApi = new ChatApi();
-  const authedChatSocket = useChatSocket();
+  const { chatSocket, sendMessage } = useChatSocket();
   const [conversationId] = useState(1);
   const [messages, setMessages] = useState<IMessageDto[]>([]);
 
@@ -49,24 +49,22 @@ const Chat = () => {
   }, [messagesInConversation]);
 
   useEffect(() => {
-    authedChatSocket?.on("newMessage", (message: IMessageDto) => {
+    chatSocket?.on("newMessage", (message: IMessageDto) => {
       setMessages((prevMessages) => [message, ...prevMessages]);
     });
 
     return () => {
-      authedChatSocket?.off("newMessage");
+      chatSocket?.off("newMessage");
     };
-  }, [authedChatSocket]);
+  }, [chatSocket]);
 
-  const sendMessage = (content: string) => {
+  const sendMessageWrapper = (content: string) => {
     const data = {
       userId: userStore.user.id,
       content,
       conversationId,
     };
-    console.log("data", data);
-    console.log("authedChatSocket", authedChatSocket);
-    authedChatSocket?.emit("sendMessage", data);
+    sendMessage(data);
   };
 
   return (
@@ -93,7 +91,7 @@ const Chat = () => {
         </InfiniteScroll>
       </div>
 
-      <MessageInput onSendMessage={sendMessage} />
+      <MessageInput onSendMessage={sendMessageWrapper} />
     </div>
   );
 };

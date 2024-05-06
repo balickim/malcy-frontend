@@ -4,7 +4,7 @@ import { userStore } from "~/store/userStore";
 import { IApiResponse } from "~/types/common";
 import { getAccessToken, setAccessToken } from "~/utils/cookies";
 
-async function tryRefreshToken() {
+export async function tryRefreshToken() {
   const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
     method: "POST",
     credentials: "include",
