@@ -10,6 +10,7 @@ import InvalidateSize from "~/components/Map/InvalidateSize";
 import { LocationFinderDummy } from "~/components/Map/LocationFinderDummy";
 import { MapBoundsUpdater } from "~/components/Map/MapBoundsUpdater";
 import { NoPlayerPositionInfo } from "~/components/Map/NoPlayerPositionInfo";
+import { OtherPlayersLocationMarker } from "~/components/Map/OtherPlayersLocationsMarkers";
 import ResourcesWrapper from "~/components/Map/ResourcesWrapper";
 import { UserLocationMarker } from "~/components/Map/UserLocationMarker";
 import PageContainer from "~/components/PageContainer";
@@ -17,12 +18,15 @@ import Settlements from "~/components/Settlements";
 import AddSettlementModal from "~/components/Settlements/Modals/AddSettlementModal";
 import { IBounds } from "~/types/settlement";
 import { centerMapOnPlayer } from "~/utils/map";
-import { usePlayerLocationWatcher } from "~/utils/usePlayerLocationWatcher";
+import { useOthersPlayersPositionsWatcher } from "~/utils/useOtherPlayersPositionsWatcher";
+import { usePlayerPositionWatcher } from "~/utils/usePlayerPositionWatcher";
 import { useServerConfig } from "~/utils/useServerConfig";
 import { useUser } from "~/utils/useUser";
 
 const Map = () => {
-  const playerLocation = usePlayerLocationWatcher();
+  const playerLocation = usePlayerPositionWatcher();
+  const otherPlayersPositions = useOthersPlayersPositionsWatcher();
+  console.log(otherPlayersPositions);
   useUser({ refetchInterval: 5000 });
   const serverConfig = useServerConfig({
     refetchOnWindowFocus: false,
@@ -66,6 +70,7 @@ const Map = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         <UserLocationMarker location={playerLocation} />
+        <OtherPlayersLocationMarker locations={otherPlayersPositions} />
         <MapBoundsUpdater setBounds={setBounds} />
         <Settlements bounds={bounds} />
         <Buttons

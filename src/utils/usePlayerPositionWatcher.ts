@@ -9,9 +9,9 @@ export interface IGeoLocation {
   lng: number;
 }
 
-export function usePlayerLocationWatcher() {
+export function usePlayerPositionWatcher() {
   const { userStore } = store;
-  const [playerLocation, setPlayerLocation] = useState<IGeoLocation | null>(
+  const [playerPosition, setPlayerPosition] = useState<IGeoLocation | null>(
     null,
   );
 
@@ -25,8 +25,11 @@ export function usePlayerLocationWatcher() {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
-          baseSocket.emit("position", { location, userId: userStore.user.id });
-          setPlayerLocation(location);
+          baseSocket.emit("playerPosition", {
+            location,
+            userId: userStore.user.id,
+          });
+          setPlayerPosition(location);
         },
         (error) => {
           switch (error.code) {
@@ -59,5 +62,5 @@ export function usePlayerLocationWatcher() {
     }
   }, []);
 
-  return playerLocation;
+  return playerPosition;
 }
