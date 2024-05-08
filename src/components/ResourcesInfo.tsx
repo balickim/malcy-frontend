@@ -9,7 +9,7 @@ interface IResources {
   woodMax?: number;
 }
 
-export function Resources(resources: IResources) {
+export function ResourcesInfo(resources: IResources) {
   if (resources.gold === undefined || resources.wood === undefined) return null;
 
   const gold = ResourceTypeEnum.gold;

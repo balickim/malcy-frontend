@@ -13,8 +13,8 @@ import React from "react";
 
 import SettlementsApi from "~/api/settlements";
 import { SettlementTypesEnum } from "~/api/settlements/dtos";
-import { Army } from "~/components/Army";
-import { Resources } from "~/components/Resources";
+import { ArmyInfo } from "~/components/ArmyInfo";
+import { ResourcesInfo } from "~/components/ResourcesInfo";
 import { Recruitments } from "~/components/Settlements/Recruitments";
 import store from "~/store";
 
@@ -66,9 +66,9 @@ export default function ViewSettlementModal({
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        {isOwn ? <Army army={settlementData.army} /> : null}
+        {isOwn ? <ArmyInfo army={settlementData.army} /> : null}
         {isOwn ? (
-          <Resources
+          <ResourcesInfo
             gold={settlementData.gold}
             goldMax={resourcesCap && resourcesCap.gold}
             wood={settlementData.wood}

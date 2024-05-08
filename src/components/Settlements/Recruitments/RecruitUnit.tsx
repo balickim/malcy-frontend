@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import RecruitmentsApi from "~/api/recruitments";
 import { IRequestRecruitmentDto } from "~/api/recruitments/dtos";
 import { IPrivateSettlementDto } from "~/api/settlements/dtos";
-import { Resources } from "~/components/Resources";
+import { ResourcesInfo } from "~/components/ResourcesInfo";
 import store from "~/store";
 import { UnitType } from "~/types/army";
 
@@ -62,7 +62,7 @@ export const RecruitUnit: React.FC<IRecruitUnitProps> = ({
         className="h-16 w-16"
       />
       <div className="flex flex-col flex-grow items-center gap-2">
-        <Resources
+        <ResourcesInfo
           wood={unitCost.wood * unitCount}
           woodMax={settlementData.wood}
           gold={unitCost.gold * unitCount}

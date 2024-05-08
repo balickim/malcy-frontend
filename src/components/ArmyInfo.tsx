@@ -6,7 +6,7 @@ interface IArmy {
   army?: TArmy;
 }
 
-export function Army({ army }: IArmy) {
+export function ArmyInfo({ army }: IArmy) {
   if (!army) return null;
 
   return (

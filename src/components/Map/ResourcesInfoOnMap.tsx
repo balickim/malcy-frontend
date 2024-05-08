@@ -1,10 +1,10 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
 
-import { Resources } from "~/components/Resources";
+import { ResourcesInfo } from "~/components/ResourcesInfo";
 import store from "~/store";
 
-export default observer(function ResourcesWrapper() {
+export default observer(function ResourcesInfoOnMap() {
   const { userStore } = store;
 
   return (
@@ -13,7 +13,7 @@ export default observer(function ResourcesWrapper() {
         "absolute top-0 right-1/2 z-[1000] bg-gray-800 bg-opacity-40 p-2 rounded-bl text-white"
       }
     >
-      <Resources gold={userStore.user.gold} wood={userStore.user.wood} />
+      <ResourcesInfo gold={userStore.user.gold} wood={userStore.user.wood} />
     </div>
   );
 });
