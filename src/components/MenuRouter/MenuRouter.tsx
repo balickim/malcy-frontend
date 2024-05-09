@@ -25,7 +25,6 @@ import Account from "~/pages/Account";
 import Auth from "~/pages/Auth";
 import Map from "~/pages/Map";
 import store from "~/store";
-import { useUser } from "~/utils/useUser";
 
 interface IAppPage {
   url: string;
@@ -56,7 +55,6 @@ const appPages: IAppPage[] = [
 
 export default observer(function MenuRouter() {
   const { userStore } = store;
-  useUser({ refetchInterval: 5000 });
 
   const menuItems: IMenuItem[] = [
     ...(userStore.isLoggedIn

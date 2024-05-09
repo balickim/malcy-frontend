@@ -1,5 +1,5 @@
 import L, { LatLngTuple, LatLngBoundsExpression } from "leaflet";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { MapContainer, TileLayer, Polygon } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -7,7 +7,6 @@ import ChatWindowOnMap from "~/components/Chat/ChatWindowOnMap";
 import ArmyInfoOnMap from "~/components/Map/ArmyInfoOnMap";
 import Buttons from "~/components/Map/Buttons";
 import { LocationFinderDummy } from "~/components/Map/LocationFinderDummy";
-import { MapBoundsUpdater } from "~/components/Map/MapBoundsUpdater";
 import { NoPlayerPositionInfo } from "~/components/Map/NoPlayerPositionInfo";
 import { OtherPlayersLocationMarker } from "~/components/Map/OtherPlayersLocationsMarkers";
 import ResourcesInfoOnMap from "~/components/Map/ResourcesInfoOnMap";
@@ -15,18 +14,18 @@ import { UserLocationMarker } from "~/components/Map/UserLocationMarker";
 import PageContainer from "~/components/PageContainer";
 import Settlements from "~/components/Settlements";
 import AddSettlementModal from "~/components/Settlements/Modals/AddSettlementModal";
-import { IBounds } from "~/types/settlement";
 import { useOthersPlayersPositionsWatcher } from "~/utils/useOtherPlayersPositionsWatcher";
 import { usePlayerPositionWatcher } from "~/utils/usePlayerPositionWatcher";
 import { useServerConfig } from "~/utils/useServerConfig";
+import { useUser } from "~/utils/useUser";
 
 const Map = () => {
   const playerLocation = usePlayerPositionWatcher();
   const otherPlayersPositions = useOthersPlayersPositionsWatcher();
   const serverConfig = useServerConfig({ refetchOnWindowFocus: false });
+  useUser({ refetchInterval: 5000 });
 
   const mapRef = useRef<L.Map>(null);
-  const [bounds, setBounds] = useState<IBounds>();
   const modalAddSettlementRef = useRef<HTMLIonModalElement>(null);
 
   const cityBounds: LatLngBoundsExpression = [
@@ -79,12 +78,12 @@ const Map = () => {
           positions={fogOfWarCoordinates}
           color="gray"
           fillOpacity={0.4}
+          weight={0}
         />
 
         <UserLocationMarker location={playerLocation} />
         <OtherPlayersLocationMarker locations={otherPlayersPositions} />
-        <MapBoundsUpdater setBounds={setBounds} />
-        {/*<Settlements bounds={bounds} />*/}
+        <Settlements />
 
         {import.meta.env.DEV ? <LocationFinderDummy /> : null}
       </MapContainer>

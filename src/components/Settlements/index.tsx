@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import L from "leaflet";
-import React, { useEffect, useState } from "react";
-import { Marker } from "react-leaflet";
+import React, { memo, useCallback, useEffect, useState } from "react";
+import { Marker, useMap } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 
 import SettlementsApi from "~/api/settlements";
@@ -14,14 +14,13 @@ import ViewSettlementModal from "~/components/Settlements/Modals/ViewSettlementM
 import store from "~/store";
 import { IBounds } from "~/types/settlement";
 
-interface ISettlements {
-  bounds?: IBounds;
-}
-
-export default function Settlements({ bounds }: ISettlements) {
+export default function Settlements() {
   const settlementsApi = new SettlementsApi();
   const { userStore } = store;
+  const map = useMap();
+  const [bounds, setBounds] = useState<IBounds>();
   const [isSettlementModalOpen, setIsSettlementModalOpen] = useState(false);
+  const [settlements, setSettlements] = useState<ISettlementDto[]>([]);
   const [openedModal, setOpenedModal] = useState<
     "pick_up" | "put_down" | undefined
   >(undefined);
@@ -35,14 +34,30 @@ export default function Settlements({ bounds }: ISettlements) {
       }
     | undefined
   >(undefined);
-
-  const [settlements, setSettlements] = useState<ISettlementDto[]>([]);
   const { data, isSuccess } = useQuery({
     queryKey: ["settlementBounds", bounds],
     queryFn: () => (bounds ? settlementsApi.getSettlements(bounds) : undefined),
     enabled: !!bounds,
     refetchInterval: 5000,
   });
+
+  useEffect(() => {
+    const onMapMove = () => {
+      const tmpBounds = map.getBounds();
+      const northEastLat = tmpBounds.getNorthEast().lat;
+      const northEastLng = tmpBounds.getNorthEast().lng;
+      const southWestLat = tmpBounds.getSouthWest().lat;
+      const southWestLng = tmpBounds.getSouthWest().lng;
+
+      setBounds({ northEastLat, northEastLng, southWestLat, southWestLng });
+    };
+
+    onMapMove();
+    map.on("moveend", onMapMove);
+    return () => {
+      map.off("moveend", onMapMove);
+    };
+  }, [map]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -74,11 +89,11 @@ export default function Settlements({ bounds }: ISettlements) {
     };
   }, []);
 
-  const closeModals = () => {
+  const closeModals = useCallback(() => {
     setIsSettlementModalOpen(false);
     setOpenedModal(undefined);
     setContextMenuData(undefined);
-  };
+  }, []);
 
   const handleMarkerClick = (
     settlement: ISettlementDto,
@@ -87,24 +102,71 @@ export default function Settlements({ bounds }: ISettlements) {
     setContextMenuData({ settlement, position: event.containerPoint });
   };
 
-  const isOwn =
-    contextMenuData && contextMenuData.settlement.user.id === userStore.user.id;
+  const MemoizedMarker = memo(
+    ({
+      settlement,
+      onMarkerClick,
+    }: {
+      settlement: ISettlementDto;
+      onMarkerClick: (event: L.LeafletMouseEvent) => void;
+    }) => (
+      <Marker
+        key={settlement.id}
+        position={settlement}
+        icon={CustomMarkerIcon({
+          settlement,
+          userStore,
+        })}
+        eventHandlers={{
+          click: onMarkerClick,
+        }}
+      />
+    ),
+  );
+  MemoizedMarker.displayName = "MemoizedMarker";
+  const renderContextMenu = () => {
+    if (!contextMenuData || !contextMenuData.position) return null;
+
+    const isOwn = contextMenuData.settlement.user.id === userStore.user.id;
+    return (
+      <ContextMenu
+        setPosition={(position) =>
+          setContextMenuData({ ...contextMenuData, position })
+        }
+        position={contextMenuData.position}
+        items={[
+          {
+            icon: "assets/modal_info.png",
+            onClick: () => setIsSettlementModalOpen(true),
+          },
+          ...(isOwn
+            ? [
+                {
+                  icon: "assets/malcy_leap_off_hand.png",
+                  onClick: () => setOpenedModal("put_down"),
+                },
+                {
+                  icon: "assets/malcy_take_up.webp",
+                  onClick: () => setOpenedModal("pick_up"),
+                },
+              ]
+            : []),
+        ]}
+      />
+    );
+  };
   return (
     <>
       <MarkerClusterGroup chunkedLoading disableClusteringAtZoom={18}>
-        {settlements.map((settlement) => (
-          <Marker
-            key={settlement.id}
-            position={settlement}
-            icon={CustomMarkerIcon({
-              settlement,
-              userStore,
-            })}
-            eventHandlers={{
-              click: (event) => handleMarkerClick(settlement, event),
-            }}
-          />
-        ))}
+        {settlements.map((settlement) => {
+          return (
+            <MemoizedMarker
+              key={settlement.id}
+              settlement={settlement}
+              onMarkerClick={(event) => handleMarkerClick(settlement, event)}
+            />
+          );
+        })}
       </MarkerClusterGroup>
 
       <ViewSettlementModal
@@ -119,32 +181,7 @@ export default function Settlements({ bounds }: ISettlements) {
         settlementId={contextMenuData && contextMenuData.settlement.id}
       />
 
-      {contextMenuData && contextMenuData.position ? (
-        <ContextMenu
-          setPosition={(position) =>
-            setContextMenuData({ ...contextMenuData, position })
-          }
-          position={contextMenuData.position}
-          items={[
-            {
-              icon: "assets/modal_info.png",
-              onClick: () => setIsSettlementModalOpen(true),
-            },
-            ...(isOwn
-              ? [
-                  {
-                    icon: "assets/malcy_leap_off_hand.png",
-                    onClick: () => setOpenedModal("put_down"),
-                  },
-                  {
-                    icon: "assets/malcy_take_up.webp",
-                    onClick: () => setOpenedModal("pick_up"),
-                  },
-                ]
-              : []),
-          ]}
-        />
-      ) : null}
+      {renderContextMenu()}
     </>
   );
 }
