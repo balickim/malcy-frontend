@@ -1,11 +1,12 @@
-import L, { LatLngTuple, LatLngBoundsExpression } from "leaflet";
+import L, { LatLngTuple } from "leaflet";
 import React, { useRef } from "react";
-import { MapContainer, TileLayer, Polygon } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 import ChatWindowOnMap from "~/components/Chat/ChatWindowOnMap";
 import ArmyInfoOnMap from "~/components/Map/ArmyInfoOnMap";
 import Buttons from "~/components/Map/Buttons";
+import FogOfWar from "~/components/Map/FogOfWar";
 import { LocationFinderDummy } from "~/components/Map/LocationFinderDummy";
 import { NoPlayerPositionInfo } from "~/components/Map/NoPlayerPositionInfo";
 import { OtherPlayersLocationMarker } from "~/components/Map/OtherPlayersLocationsMarkers";
@@ -28,19 +29,12 @@ const Map = () => {
   const mapRef = useRef<L.Map>(null);
   const modalAddSettlementRef = useRef<HTMLIonModalElement>(null);
 
-  const cityBounds: LatLngBoundsExpression = [
+  const cityBounds: LatLngTuple[] = [
     [53.391874, 14.424565], // south-west
     [53.516425, 14.424565], // north-west
     [53.516425, 14.653759], // north-east
     [53.391874, 14.653759], // south-east
   ];
-  const uncoveredArea: LatLngTuple[] = [
-    [53.45, 14.5],
-    [53.47, 14.52],
-    [53.46, 14.55],
-    [53.44, 14.53],
-  ];
-  const fogOfWarCoordinates: LatLngTuple[][] = [cityBounds, uncoveredArea];
 
   if (!playerLocation || serverConfig.isFetching) {
     return (
@@ -74,16 +68,11 @@ const Map = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
 
-        <Polygon
-          positions={fogOfWarCoordinates}
-          color="gray"
-          fillOpacity={0.4}
-          weight={0}
-        />
+        <FogOfWar cityBounds={cityBounds} />
 
         <UserLocationMarker location={playerLocation} />
         <OtherPlayersLocationMarker locations={otherPlayersPositions} />
-        <Settlements />
+        {/*<Settlements />*/}
 
         {import.meta.env.DEV ? <LocationFinderDummy /> : null}
       </MapContainer>
