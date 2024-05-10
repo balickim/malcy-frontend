@@ -72,7 +72,7 @@ const Map = () => {
 
         <UserLocationMarker location={playerLocation} />
         <OtherPlayersLocationMarker locations={otherPlayersPositions} />
-        {/*<Settlements />*/}
+        <Settlements />
 
         {import.meta.env.DEV ? <LocationFinderDummy /> : null}
       </MapContainer>
