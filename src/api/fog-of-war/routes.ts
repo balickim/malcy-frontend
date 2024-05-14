@@ -1,7 +1,10 @@
 import { LatLngTuple } from "leaflet";
 
 import { fetchWrapper } from "~/api/fetch";
+import { ISettlementDto } from "~/api/settlements/dtos";
 import { IApiResponse } from "~/types/common";
+import { IBounds } from "~/types/settlement";
+import { convertBoundsToSearchParams } from "~/utils/formatters";
 
 export default class FogOfWarApi {
   private readonly basePath = `${import.meta.env.VITE_API_URL}/fog-of-war`;
@@ -12,5 +15,12 @@ export default class FogOfWarApi {
 
   getUsersVisibleAreas = async (): Promise<IApiResponse<LatLngTuple[]>> => {
     return fetchWrapper(`${this.basePath}/visible-areas`);
+  };
+
+  getSettlements = async (
+    bounds: IBounds,
+  ): Promise<IApiResponse<ISettlementDto>> => {
+    const data = new URLSearchParams(convertBoundsToSearchParams(bounds));
+    return fetchWrapper(`${this.basePath}/bounds?${data}`);
   };
 }

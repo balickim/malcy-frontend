@@ -4,7 +4,7 @@ import React, { memo, useCallback, useEffect, useState } from "react";
 import { Marker, useMap } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 
-import SettlementsApi from "~/api/settlements";
+import FogOfWarApi from "~/api/fog-of-war/routes";
 import { ISettlementDto } from "~/api/settlements/dtos";
 import { baseSocket } from "~/api/socket";
 import ContextMenu from "~/components/ContextMenu";
@@ -15,7 +15,7 @@ import store from "~/store";
 import { IBounds } from "~/types/settlement";
 
 export default function Settlements() {
-  const settlementsApi = new SettlementsApi();
+  const fogOfWarApi = new FogOfWarApi();
   const { userStore } = store;
   const map = useMap();
   const [bounds, setBounds] = useState<IBounds>();
@@ -36,7 +36,7 @@ export default function Settlements() {
   >(undefined);
   const { data, isSuccess } = useQuery({
     queryKey: ["settlementBounds", bounds],
-    queryFn: () => (bounds ? settlementsApi.getSettlements(bounds) : undefined),
+    queryFn: () => (bounds ? fogOfWarApi.getSettlements(bounds) : undefined),
     enabled: !!bounds,
     refetchInterval: 5000,
   });
@@ -147,6 +147,14 @@ export default function Settlements() {
                 },
                 {
                   icon: "assets/malcy_take_up.webp",
+                  onClick: () => setOpenedModal("pick_up"),
+                },
+              ]
+            : []),
+          ...(!isOwn
+            ? [
+                {
+                  icon: "assets/start_siege.webp",
                   onClick: () => setOpenedModal("pick_up"),
                 },
               ]
