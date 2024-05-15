@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import L from "leaflet";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import { Marker, useMap } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 
+import CombatsApi from "~/api/combats/routes";
 import FogOfWarApi from "~/api/fog-of-war/routes";
 import { ISettlementDto } from "~/api/settlements/dtos";
 import { baseSocket } from "~/api/socket";
@@ -16,6 +17,7 @@ import { IBounds } from "~/types/settlement";
 
 export default function Settlements() {
   const fogOfWarApi = new FogOfWarApi();
+  const combatsApi = new CombatsApi();
   const { userStore } = store;
   const map = useMap();
   const [bounds, setBounds] = useState<IBounds>();
@@ -34,12 +36,30 @@ export default function Settlements() {
       }
     | undefined
   >(undefined);
-  const { data, isSuccess } = useQuery({
+  const {
+    data: settlementsData,
+    isSuccess,
+    refetch,
+  } = useQuery({
     queryKey: ["settlementBounds", bounds],
     queryFn: () => (bounds ? fogOfWarApi.getSettlements(bounds) : undefined),
     enabled: !!bounds,
     refetchInterval: 5000,
   });
+
+  const mutation = useMutation({
+    mutationFn: (data: unknown) =>
+      combatsApi.startSiege({
+        // @ts-expect-error TODO add types
+        ...data,
+        settlementId: contextMenuData?.settlement.id,
+      }),
+  });
+
+  const startSiege = async (data: unknown) => {
+    await mutation.mutateAsync(data);
+    return Promise.allSettled([refetch]);
+  };
 
   useEffect(() => {
     const onMapMove = () => {
@@ -62,7 +82,9 @@ export default function Settlements() {
   useEffect(() => {
     if (isSuccess) {
       setSettlements((previous) => {
-        const newValues = Array.isArray(data?.data) ? data?.data : [data?.data];
+        const newValues = Array.isArray(settlementsData?.data)
+          ? settlementsData?.data
+          : [settlementsData?.data];
         const updatedSettlements = new Map(previous.map((s) => [s.id, s]));
 
         newValues.forEach((nv) => {
@@ -72,7 +94,7 @@ export default function Settlements() {
         return Array.from(updatedSettlements.values());
       });
     }
-  }, [isSuccess, data?.data]);
+  }, [isSuccess, settlementsData?.data]);
 
   useEffect(() => {
     function newSettlement(value: ISettlementDto) {
@@ -155,7 +177,7 @@ export default function Settlements() {
             ? [
                 {
                   icon: "assets/start_siege.webp",
-                  onClick: () => setOpenedModal("pick_up"),
+                  onClick: () => startSiege({}),
                 },
               ]
             : []),

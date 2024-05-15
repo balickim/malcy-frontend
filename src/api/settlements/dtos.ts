@@ -31,6 +31,10 @@ export interface IPrivateSettlementDto extends IPublicSettlementDto {
   army: TArmy;
 }
 
+export interface IStartSiegeDto {
+  army: Partial<TArmy>;
+}
+
 export interface ISettlementDto {
   id: string;
   lat: number;
@@ -46,6 +50,12 @@ export interface ISettlementDto {
     updatedAt: string;
   };
   army: TArmy;
+  siege?: {
+    jobId: string;
+    data: IStartSiegeDto;
+    remainingDelay: number;
+    progress: number;
+  };
 }
 
 export interface ISettlementDetailsDto {

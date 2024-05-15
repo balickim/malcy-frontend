@@ -15,7 +15,7 @@ export const CustomMarkerIcon = ({
   userStore,
 }: ICustomMarkerProps) => {
   const isOwned = settlement.user.id === userStore.user.id;
-  const isSiege = false;
+  const isSiege = !!settlement.siege;
   const iconUrl = `assets/settlements/types/${settlement.type.toLowerCase()}.webp`;
   const siegeUrl = `assets/siege_base.png`;
 
@@ -41,19 +41,22 @@ export const CustomMarkerIcon = ({
         />
       )}
       {isSiege && (
-        <img
-          src={siegeUrl}
-          alt={`settlement ${settlement.name} image`}
-          style={{
-            position: "absolute",
-            top: "-40%",
-            left: "-45%",
-            zIndex: "-1",
-            width: "55px",
-            height: "55px",
-            borderRadius: "50%",
-          }}
-        />
+        <>
+          <img
+            src={siegeUrl}
+            alt={`settlement ${settlement.name} image`}
+            style={{
+              position: "absolute",
+              top: "-40%",
+              left: "-45%",
+              zIndex: "-1",
+              width: "55px",
+              height: "55px",
+              borderRadius: "50%",
+            }}
+          />
+          {settlement.siege?.progress.toFixed(2)}
+        </>
       )}
     </div>,
   );
