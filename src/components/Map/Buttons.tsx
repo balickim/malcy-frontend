@@ -1,6 +1,7 @@
 import { IonButton, IonIcon } from "@ionic/react";
-import { add, locateOutline } from "ionicons/icons";
+import { locateOutline } from "ionicons/icons";
 import React from "react";
+import { useDrag } from "react-dnd";
 
 import { centerMapOnPlayer } from "~/utils/map";
 import { IGeoLocation } from "~/utils/usePlayerPositionWatcher";
@@ -11,15 +12,19 @@ interface IButtons {
 }
 
 export default function Buttons({ mapRef, playerLocation }: IButtons) {
+  const [, drag] = useDrag(() => ({
+    type: "SETTLER",
+    item: { name: "Settler" },
+  }));
+
   return (
     <>
-      <IonButton
-        id="open-modal"
-        className={"absolute bottom-32 right-2 z-[1500] min-h-8 min-w-16"}
+      <div
+        ref={drag}
+        className={"absolute bottom-36 right-2 z-[1500] cursor-grab"}
       >
-        <IonIcon aria-hidden="true" ios={add} md={add} />
-      </IonButton>
-
+        <IonButton className={"min-h-8 min-w-16"}>🏠</IonButton>
+      </div>
       <IonButton
         onClick={() => centerMapOnPlayer(mapRef, playerLocation)}
         className={"absolute bottom-20 right-2 z-[1500] min-h-8 min-w-16"}

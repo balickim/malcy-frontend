@@ -16,15 +16,19 @@ import { fetchWrapper } from "~/api/fetch";
 
 interface IAddSettlementModal {
   modalRef: RefObject<HTMLIonModalElement>;
+  coords: { lat: number; lng: number } | null;
 }
 
-export default function AddSettlementModal({ modalRef }: IAddSettlementModal) {
+export default function AddSettlementModal({
+  modalRef,
+  coords,
+}: IAddSettlementModal) {
   const [values, setValues] = useState({ name: "" });
 
   async function confirm() {
     await fetchWrapper(`${import.meta.env.VITE_API_URL}/settlements`, {
       method: "POST",
-      body: JSON.stringify(values),
+      body: JSON.stringify({ ...values, position: coords }),
     });
 
     modalRef.current?.dismiss();
