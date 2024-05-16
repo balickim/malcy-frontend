@@ -47,7 +47,6 @@ const Map = () => {
   ];
 
   const handleDrop = (coords: { lat: number; lng: number }) => {
-    console.log("Dropped at: ", coords);
     if (modalAddSettlementRef.current) {
       setDropCoords(coords);
       modalAddSettlementRef.current.present();

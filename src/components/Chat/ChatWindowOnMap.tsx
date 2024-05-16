@@ -18,7 +18,7 @@ const ChatWindowOnMap = () => {
       : "57px"
     : isPlatform("mobile")
       ? "104px"
-      : "107px";
+      : "97px";
 
   return (
     <motion.div
