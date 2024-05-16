@@ -77,7 +77,10 @@ const Map = () => {
         <Buttons mapRef={mapRef} playerLocation={playerLocation} />
         <MapContainer
           ref={mapRef}
-          style={{ height: "calc(100vh - 57px)", width: "100%" }}
+          style={{
+            height: `calc(100vh - ${isPlatform("mobile") ? "50px" : "57px"})`,
+            width: "100%",
+          }}
           center={[playerLocation.lat, playerLocation.lng]}
           zoom={18}
           minZoom={13}
