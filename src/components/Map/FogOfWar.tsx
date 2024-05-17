@@ -1,64 +1,42 @@
-import { useQuery } from "@tanstack/react-query";
 import { LatLngTuple } from "leaflet";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Pane, Polygon } from "react-leaflet";
 
-import FogOfWarApi from "~/api/fog-of-war/routes";
+import { baseSocket } from "~/api/socket";
 
 interface IFogOfWar {
   cityBounds: LatLngTuple[];
 }
 
 const FogOfWar = ({ cityBounds }: IFogOfWar) => {
-  const fogOfWarApi = new FogOfWarApi();
-  const {
-    data: usersDiscoveredAreas,
-    isSuccess: usersDiscoveredAreasIsSuccess,
-  } = useQuery({
-    queryKey: ["getUsersDiscoveredAreas"],
-    queryFn: () => fogOfWarApi.getUsersDiscoveredAreas(),
-    refetchOnWindowFocus: false,
-    refetchInterval: 5000,
-  });
-  const { data: usersVisibleAreas, isSuccess: usersVisibleAreasIsSuccess } =
-    useQuery({
-      queryKey: ["getUsersVisibleAreas"],
-      queryFn: () => fogOfWarApi.getUsersVisibleAreas(),
-      refetchOnWindowFocus: false,
-      refetchInterval: 5000,
-    });
+  const [discoveredAreas, setDiscoveredAreas] = useState([]);
+  const [visibleAreas, setVisibleAreas] = useState([]);
+  useEffect(() => {
+    baseSocket.on("allDiscoveredByUser", (args) => setDiscoveredAreas(args));
+    baseSocket.on("allVisibleByUser", (args) => setVisibleAreas(args));
+    return () => {
+      baseSocket.off("allDiscoveredByUser");
+      baseSocket.off("allVisibleByUser");
+    };
+  }, []);
 
   return (
     <>
       <Pane name={"discoveredArea"}>
-        {usersDiscoveredAreasIsSuccess ? (
-          <>
-            <Polygon
-              positions={[
-                cityBounds,
-                usersDiscoveredAreas?.data.map((area) => area),
-              ]}
-              color="black"
-              fillOpacity={0.2}
-              weight={0}
-            />
-          </>
-        ) : null}
+        <Polygon
+          positions={[cityBounds, discoveredAreas.map((area) => area)]}
+          color="black"
+          fillOpacity={0.2}
+          weight={0}
+        />
       </Pane>
       <Pane name={"visibleArea"}>
-        {usersVisibleAreasIsSuccess ? (
-          <>
-            <Polygon
-              positions={[
-                cityBounds,
-                usersVisibleAreas?.data.map((area) => area),
-              ]}
-              color="black"
-              fillOpacity={0.5}
-              weight={0}
-            />
-          </>
-        ) : null}
+        <Polygon
+          positions={[cityBounds, visibleAreas.map((area) => area)]}
+          color="black"
+          fillOpacity={0.5}
+          weight={0}
+        />
       </Pane>
     </>
   );

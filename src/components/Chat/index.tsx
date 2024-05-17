@@ -5,15 +5,21 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 import { IMessageDto } from "~/api/chat/dtos";
 import ChatApi from "~/api/chat/routes";
-import { useChatSocket } from "~/api/socket";
+import { useWebSocket } from "~/api/socket";
 import MessageInput from "~/components/Chat/MessageInput";
 import MessageList from "~/components/Chat/MessageList";
 import store from "~/store";
 
+export interface ISendMessageData {
+  userId: string;
+  content: string;
+  conversationId: number;
+}
+
 const Chat = () => {
   const { userStore } = store;
   const chatApi = new ChatApi();
-  const { chatSocket, sendMessage } = useChatSocket();
+  const { socket, sendMessage } = useWebSocket<ISendMessageData>("chat");
   const [conversationId] = useState(1);
   const [messages, setMessages] = useState<IMessageDto[]>([]);
 
@@ -49,14 +55,15 @@ const Chat = () => {
   }, [messagesInConversation]);
 
   useEffect(() => {
-    chatSocket?.on("newMessage", (message: IMessageDto) => {
+    console.log(socket);
+    socket?.on("newMessage", (message: IMessageDto) => {
       setMessages((prevMessages) => [message, ...prevMessages]);
     });
 
     return () => {
-      chatSocket?.off("newMessage");
+      socket?.off("newMessage");
     };
-  }, [chatSocket]);
+  }, [socket?.connected]);
 
   const sendMessageWrapper = (content: string) => {
     const data = {
@@ -64,7 +71,7 @@ const Chat = () => {
       content,
       conversationId,
     };
-    sendMessage(data);
+    sendMessage("sendMessage", data);
   };
 
   return (
