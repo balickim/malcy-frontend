@@ -5,21 +5,14 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 import { IMessageDto } from "~/api/chat/dtos";
 import ChatApi from "~/api/chat/routes";
-import { useWebSocket } from "~/api/socket";
 import MessageInput from "~/components/Chat/MessageInput";
 import MessageList from "~/components/Chat/MessageList";
 import store from "~/store";
-
-export interface ISendMessageData {
-  userId: string;
-  content: string;
-  conversationId: number;
-}
+import { ISendMessageData, websocketChat } from "~/store/websocketStore";
 
 const Chat = () => {
   const { userStore } = store;
   const chatApi = new ChatApi();
-  const { socket, sendMessage } = useWebSocket<ISendMessageData>("chat");
   const [conversationId] = useState(1);
   const [messages, setMessages] = useState<IMessageDto[]>([]);
 
@@ -55,23 +48,23 @@ const Chat = () => {
   }, [messagesInConversation]);
 
   useEffect(() => {
-    console.log(socket);
-    socket?.on("newMessage", (message: IMessageDto) => {
+    websocketChat.socket?.on("newMessage", (message: IMessageDto) => {
+      new Audio("notification.mp3").play();
       setMessages((prevMessages) => [message, ...prevMessages]);
     });
 
     return () => {
-      socket?.off("newMessage");
+      websocketChat.socket?.off("newMessage");
     };
-  }, [socket?.connected]);
+  }, [websocketChat.socket]);
 
   const sendMessageWrapper = (content: string) => {
-    const data = {
+    const data: ISendMessageData = {
       userId: userStore.user.id,
       content,
       conversationId,
     };
-    sendMessage("sendMessage", data);
+    return websocketChat.sendMessage("sendMessage", data);
   };
 
   return (

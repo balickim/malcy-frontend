@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
-import { baseSocket } from "~/api/socket";
 import store from "~/store";
+import { websocketUserLocation } from "~/store/websocketStore";
 
 export interface IGeoLocation {
   lat: number;
@@ -25,7 +25,7 @@ export function usePlayerPositionWatcher() {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
-          baseSocket.emit("playerPosition", {
+          websocketUserLocation.socket?.emit("playerPosition", {
             location,
             userId: userStore.user.id,
           });
@@ -60,7 +60,7 @@ export function usePlayerPositionWatcher() {
         }
       };
     }
-  }, []);
+  }, [websocketUserLocation.socket]);
 
   return playerPosition;
 }

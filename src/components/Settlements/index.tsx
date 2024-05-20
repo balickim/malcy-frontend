@@ -7,7 +7,6 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import CombatsApi from "~/api/combats/routes";
 import FogOfWarApi from "~/api/fog-of-war/routes";
 import { ISettlementDto } from "~/api/settlements/dtos";
-import { baseSocket } from "~/api/socket";
 import ContextMenu from "~/components/ContextMenu";
 import { CustomMarkerIcon } from "~/components/Settlements/CustomMarkerIcon";
 import PickUpOrPutDownArmyModal from "~/components/Settlements/Modals/PickUpOrPutDownArmyModal";
@@ -96,20 +95,20 @@ export default function Settlements() {
     }
   }, [isSuccess, settlementsData?.data]);
 
-  useEffect(() => {
-    function newSettlement(value: ISettlementDto) {
-      setSettlements((previous) => {
-        const updatedSettlements = new Map(previous.map((s) => [s.id, s]));
-        updatedSettlements.set(value.id, value);
-        return Array.from(updatedSettlements.values());
-      });
-    }
-
-    baseSocket.on("newSettlement", newSettlement);
-    return () => {
-      baseSocket.off("newSettlement", newSettlement);
-    };
-  }, []);
+  // useEffect(() => {
+  //   function newSettlement(value: ISettlementDto) {
+  //     setSettlements((previous) => {
+  //       const updatedSettlements = new Map(previous.map((s) => [s.id, s]));
+  //       updatedSettlements.set(value.id, value);
+  //       return Array.from(updatedSettlements.values());
+  //     });
+  //   }
+  //
+  //   baseSocket.on("newSettlement", newSettlement);
+  //   return () => {
+  //     baseSocket.off("newSettlement", newSettlement);
+  //   };
+  // }, []);
 
   const closeModals = useCallback(() => {
     setIsSettlementModalOpen(false);

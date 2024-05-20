@@ -2,7 +2,7 @@ import { LatLngTuple } from "leaflet";
 import React, { useEffect, useState } from "react";
 import { Pane, Polygon } from "react-leaflet";
 
-import { baseSocket } from "~/api/socket";
+import { websocketUserLocation } from "~/store/websocketStore";
 
 interface IFogOfWar {
   cityBounds: LatLngTuple[];
@@ -12,13 +12,17 @@ const FogOfWar = ({ cityBounds }: IFogOfWar) => {
   const [discoveredAreas, setDiscoveredAreas] = useState([]);
   const [visibleAreas, setVisibleAreas] = useState([]);
   useEffect(() => {
-    baseSocket.on("allDiscoveredByUser", (args) => setDiscoveredAreas(args));
-    baseSocket.on("allVisibleByUser", (args) => setVisibleAreas(args));
+    websocketUserLocation.socket?.on("allDiscoveredByUser", (args) =>
+      setDiscoveredAreas(args),
+    );
+    websocketUserLocation.socket?.on("allVisibleByUser", (args) =>
+      setVisibleAreas(args),
+    );
     return () => {
-      baseSocket.off("allDiscoveredByUser");
-      baseSocket.off("allVisibleByUser");
+      websocketUserLocation.socket?.off("allDiscoveredByUser");
+      websocketUserLocation.socket?.off("allVisibleByUser");
     };
-  }, []);
+  }, [websocketUserLocation.socket]);
 
   return (
     <>

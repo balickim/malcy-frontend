@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Circle, Marker } from "react-leaflet";
 
-import { baseSocket } from "~/api/socket";
 import store from "~/store";
+import { websocketUserLocation } from "~/store/websocketStore";
 
 const walkingManIcon = L.icon({
   iconUrl: "assets/player.gif",
@@ -32,13 +32,13 @@ export function UserLocationMarker({
       lng: location.lng,
     });
 
-    baseSocket.on("location:error", (args) =>
+    websocketUserLocation.socket?.on("location:error", (args) =>
       toast.error(args, { duration: 10000 }),
     );
     return () => {
-      baseSocket.off("location:error");
+      websocketUserLocation.socket?.off("location:error");
     };
-  }, [location]);
+  }, [location, websocketUserLocation.socket]);
 
   return position ? (
     <>

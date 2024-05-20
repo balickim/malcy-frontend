@@ -22,24 +22,18 @@ const ChatWindowOnMap = () => {
 
   return (
     <motion.div
-      initial={{ y: isVisible ? "100%" : 0 }}
+      initial={{ y: "100%" }}
       animate={{ y: isVisible ? 0 : "100%" }}
       transition={{ stiffness: 100 }}
       className={`absolute z-[1500] bottom-0`}
       style={{ marginBottom }}
     >
       <IonButton onClick={toggleChatVisibility}>
-        {isVisible ? (
-          <IonIcon icon={newspaper} />
-        ) : (
-          <IonIcon icon={newspaper} />
-        )}
+        <IonIcon icon={newspaper} />
       </IonButton>
-      {isVisible && (
-        <div className="bg-gray-800 bg-opacity-40">
-          <Chat />
-        </div>
-      )}
+      <div className="bg-gray-800 bg-opacity-40">
+        <Chat />
+      </div>
     </motion.div>
   );
 };

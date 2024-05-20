@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { baseSocket } from "~/api/socket";
+import { websocketUserLocation } from "~/store/websocketStore";
 
 export interface IOtherPlayerPosition {
   userId: string;
@@ -18,8 +18,11 @@ export function useOthersPlayersPositionsWatcher() {
       setOtherPlayersPositions(positions);
     };
 
-    baseSocket.on("otherPlayersPositions", handleNewPlayerPosition);
-  }, []);
+    websocketUserLocation.socket?.on(
+      "otherPlayersPositions",
+      handleNewPlayerPosition,
+    );
+  }, [websocketUserLocation.socket]);
 
   return otherPlayersPositions;
 }
