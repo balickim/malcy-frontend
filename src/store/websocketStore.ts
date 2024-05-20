@@ -8,18 +8,26 @@ const URL = import.meta.env.VITE_API_URL || "";
 
 class WebSocketStore<T> {
   socket: Socket | null = null;
-  accessToken: string | null = getAccessToken() || null;
+  accessToken: string | undefined = undefined;
   private unsentMessageQueue: { event: string; data: T }[] = [];
   private readonly namespace: string;
 
   constructor(namespace: string = "") {
     this.namespace = namespace;
     makeAutoObservable(this);
+    this.initialize();
+  }
+
+  async initialize() {
+    this.accessToken = getAccessToken();
+    if (!this.accessToken) {
+      await this.refreshAccessToken();
+    }
     this.initializeSocket();
   }
 
   initializeSocket() {
-    if (this.socket) return;
+    if (this.socket || !this.accessToken) return;
 
     this.socket = io(`${URL}/${this.namespace}`, {
       auth: { token: this.accessToken },
@@ -42,7 +50,7 @@ class WebSocketStore<T> {
         `Connection to WebSocket ${this.namespace} error: ${err.message}`,
       );
       this.socket?.disconnect();
-      setTimeout(this.refreshAccessToken, 5000);
+      setTimeout(() => this.refreshAccessToken(), 5000);
     });
   }
 

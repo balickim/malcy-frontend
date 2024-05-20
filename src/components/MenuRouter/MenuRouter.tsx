@@ -16,7 +16,7 @@ import {
   personSharp,
 } from "ionicons/icons";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useEffect } from "react";
 import { Redirect } from "react-router";
 import { Route } from "react-router-dom";
 
@@ -25,6 +25,7 @@ import Account from "~/pages/Account";
 import Auth from "~/pages/Auth";
 import Map from "~/pages/Map";
 import store from "~/store";
+import { websocketChat, websocketUserLocation } from "~/store/websocketStore";
 
 interface IAppPage {
   url: string;
@@ -55,6 +56,15 @@ const appPages: IAppPage[] = [
 
 export default observer(function MenuRouter() {
   const { userStore } = store;
+
+  useEffect(() => {
+    if (userStore.isLoggedIn) {
+      Promise.all([
+        websocketUserLocation.initialize(),
+        websocketChat.initialize(),
+      ]).then(() => console.log("Sockets initialized"));
+    }
+  }, [userStore.isLoggedIn]);
 
   const menuItems: IMenuItem[] = [
     ...(userStore.isLoggedIn
