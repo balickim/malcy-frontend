@@ -62,7 +62,7 @@ const Map = () => {
   }
 
   return (
-    <PageContainer>
+    <PageContainer ionContentProps={{ scrollY: false }}>
       <ArmyInfoOnMap />
       <ResourcesInfoOnMap />
       <ChatWindowOnMap />

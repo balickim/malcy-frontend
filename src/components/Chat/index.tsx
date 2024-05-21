@@ -49,8 +49,10 @@ const Chat = () => {
 
   useEffect(() => {
     websocketChat.socket?.on("newMessage", (message: IMessageDto) => {
-      new Audio("notification.mp3").play();
       setMessages((prevMessages) => [message, ...prevMessages]);
+      if (message.user.id !== userStore.user.id) {
+        new Audio("notification.mp3").play();
+      }
     });
 
     return () => {
