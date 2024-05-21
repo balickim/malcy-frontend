@@ -1,5 +1,9 @@
 import { makeAutoObservable } from "mobx";
-import { makePersistable } from "mobx-persist-store";
+import {
+  makePersistable,
+  isPersisting,
+  stopPersisting,
+} from "mobx-persist-store";
 
 import { IUser } from "~/types/user";
 import { removeAccessToken, setAccessToken } from "~/utils/cookies";
@@ -22,8 +26,12 @@ class UserStore {
 
   constructor() {
     makeAutoObservable(this);
+    const storageName = "UserStore";
+    if (isPersisting(this)) {
+      stopPersisting(this);
+    }
     makePersistable(this, {
-      name: "UserStore",
+      name: storageName,
       properties: ["user", "isLoggedIn"],
       storage: window.localStorage,
     });
