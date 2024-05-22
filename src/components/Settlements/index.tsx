@@ -1,26 +1,30 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import L from "leaflet";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import { Marker, useMap } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 
-import CombatsApi from "~/api/combats/routes";
 import FogOfWarApi from "~/api/fog-of-war/routes";
 import { ISettlementDto } from "~/api/settlements/dtos";
 import ContextMenu from "~/components/ContextMenu";
 import { CustomMarkerIcon } from "~/components/Settlements/CustomMarkerIcon";
+import LookUpSiegeModal from "~/components/Settlements/Modals/LookUpSiegeModal";
 import PickUpOrPutDownArmyModal from "~/components/Settlements/Modals/PickUpOrPutDownArmyModal";
+import StartSiegeModal from "~/components/Settlements/Modals/StartSiegeModal";
 import ViewSettlementModal from "~/components/Settlements/Modals/ViewSettlementModal";
 import store from "~/store";
 import { IBounds } from "~/types/settlement";
 
 export default function Settlements() {
   const fogOfWarApi = new FogOfWarApi();
-  const combatsApi = new CombatsApi();
   const { userStore } = store;
   const map = useMap();
   const [bounds, setBounds] = useState<IBounds>();
   const [isSettlementModalOpen, setIsSettlementModalOpen] = useState(false);
+  const [isSiegeModalOpen, setIsSiegeModalOpen] = useState(false);
+  const [lookUpModalData, setLookUpModalData] = useState<
+    ISettlementDto | undefined
+  >();
   const [settlements, setSettlements] = useState<ISettlementDto[]>([]);
   const [openedModal, setOpenedModal] = useState<
     "pick_up" | "put_down" | undefined
@@ -38,27 +42,13 @@ export default function Settlements() {
   const {
     data: settlementsData,
     isSuccess,
-    refetch,
+    refetch: refetchSettlementsInBounds,
   } = useQuery({
     queryKey: ["settlementBounds", bounds],
     queryFn: () => (bounds ? fogOfWarApi.getSettlements(bounds) : undefined),
     enabled: !!bounds,
     refetchInterval: 5000,
   });
-
-  const mutation = useMutation({
-    mutationFn: (data: unknown) =>
-      combatsApi.startSiege({
-        // @ts-expect-error TODO add types
-        ...data,
-        settlementId: contextMenuData?.settlement.id,
-      }),
-  });
-
-  const startSiege = async (data: unknown) => {
-    await mutation.mutateAsync(data);
-    return Promise.allSettled([refetch]);
-  };
 
   useEffect(() => {
     const onMapMove = () => {
@@ -111,9 +101,11 @@ export default function Settlements() {
   // }, []);
 
   const closeModals = useCallback(() => {
-    setIsSettlementModalOpen(false);
     setOpenedModal(undefined);
     setContextMenuData(undefined);
+    setLookUpModalData(undefined);
+    setIsSettlementModalOpen(false);
+    setIsSiegeModalOpen(false);
   }, []);
 
   const handleMarkerClick = (
@@ -176,7 +168,7 @@ export default function Settlements() {
             ? [
                 {
                   icon: "assets/start_siege.webp",
-                  onClick: () => startSiege({}),
+                  onClick: () => setIsSiegeModalOpen(true),
                 },
               ]
             : []),
@@ -192,7 +184,15 @@ export default function Settlements() {
             <MemoizedMarker
               key={settlement.id}
               settlement={settlement}
-              onMarkerClick={(event) => handleMarkerClick(settlement, event)}
+              onMarkerClick={(event) => {
+                if (settlement.siege) {
+                  console.log(settlement.siege);
+                  setLookUpModalData(settlement);
+                  return;
+                }
+
+                handleMarkerClick(settlement, event);
+              }}
             />
           );
         })}
@@ -208,6 +208,18 @@ export default function Settlements() {
         isOpen={!!openedModal}
         closeModal={closeModals}
         settlementId={contextMenuData && contextMenuData.settlement.id}
+      />
+      <StartSiegeModal
+        isOpen={isSiegeModalOpen}
+        closeModal={closeModals}
+        settlementId={contextMenuData && contextMenuData.settlement.id}
+        refetch={refetchSettlementsInBounds}
+      />
+      <LookUpSiegeModal
+        isOpen={!!lookUpModalData}
+        closeModal={closeModals}
+        settlement={lookUpModalData}
+        refetch={refetchSettlementsInBounds}
       />
 
       {renderContextMenu()}

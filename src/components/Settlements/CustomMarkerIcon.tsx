@@ -41,22 +41,19 @@ export const CustomMarkerIcon = ({
         />
       )}
       {isSiege && (
-        <>
-          <img
-            src={siegeUrl}
-            alt={`settlement ${settlement.name} image`}
-            style={{
-              position: "absolute",
-              top: "-40%",
-              left: "-45%",
-              zIndex: "-1",
-              width: "55px",
-              height: "55px",
-              borderRadius: "50%",
-            }}
-          />
-          {settlement.siege?.progress.toFixed(2)}
-        </>
+        <img
+          src={siegeUrl}
+          alt={`settlement ${settlement.name} image`}
+          style={{
+            position: "absolute",
+            top: "-40%",
+            left: "-45%",
+            zIndex: "-1",
+            width: "55px",
+            height: "55px",
+            borderRadius: "50%",
+          }}
+        />
       )}
     </div>,
   );

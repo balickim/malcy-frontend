@@ -1,6 +1,7 @@
 import { LatLngTuple } from "leaflet";
 
 import { fetchWrapper } from "~/api/fetch";
+import { IDiscoveredSettlement } from "~/api/fog-of-war/dtos";
 import { ISettlementDto } from "~/api/settlements/dtos";
 import { IApiResponse } from "~/types/common";
 import { IBounds } from "~/types/settlement";
@@ -22,5 +23,11 @@ export default class FogOfWarApi {
   ): Promise<IApiResponse<ISettlementDto>> => {
     const data = new URLSearchParams(convertBoundsToSearchParams(bounds));
     return fetchWrapper(`${this.basePath}/bounds?${data}`);
+  };
+
+  getDiscoveredSettlementById = async (
+    id: string,
+  ): Promise<IApiResponse<IDiscoveredSettlement>> => {
+    return fetchWrapper(`${this.basePath}/${id}`);
   };
 }
