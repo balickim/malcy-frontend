@@ -86,7 +86,7 @@ const ViewSettlementModal = memo(
                     username: {settlementData.user.username}
                   </p>
                   <p className="text-sm text-gray-500">
-                    id: {settlementData.user.id}
+                    user id: {settlementData.user.id}
                   </p>
                 </div>
 
@@ -117,6 +117,9 @@ const ViewSettlementModal = memo(
                       >
                         {settlementData.name}
                       </h3>
+                      <p className="text-sm text-gray-500">
+                        settlement id: {settlementData.id}
+                      </p>
                       <div className="mt-2">
                         <p className="text-sm text-gray-500">
                           Type: {settlementData.type}
